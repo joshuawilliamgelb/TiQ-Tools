@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TiQ Email Composer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#111;color:#fff;font-size:13px;overflow:hidden;}
+.app{display:flex;height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:268px;min-width:268px;background:#0e0e0e;border-right:1px solid #1e1e1e;display:flex;flex-direction:column;overflow:hidden;}
+.tabs{display:flex;border-bottom:1px solid #1e1e1e;flex-shrink:0;}
+.tab{flex:1;padding:10px 4px;text-align:center;font-size:11px;letter-spacing:0.07em;color:#555;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;user-select:none;}
+.tab:hover{color:#bbb;}
+.tab.on{color:#fff;border-bottom-color:#fff;}
+.tab-panel{display:none;flex-direction:column;overflow-y:auto;flex:1;padding:10px;gap:7px;}
+.tab-panel.on{display:flex;}
+
+/* ── SECTIONS ── */
+.sec{border:1px solid #222;border-radius:5px;overflow:hidden;flex-shrink:0;}
+.sec-h{background:#181818;padding:6px 10px;font-size:9.5px;letter-spacing:0.11em;text-transform:uppercase;color:#666;}
+.sec-b{padding:10px;display:flex;flex-direction:column;gap:8px;}
+
+/* ── FORM CONTROLS ── */
+.lbl{display:block;font-size:10px;color:#666;letter-spacing:0.05em;margin-bottom:3px;}
+.row{display:flex;align-items:center;gap:8px;}
+.row input[type=range]{flex:1;}
+.val{font-size:11px;color:#888;min-width:40px;text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0;}
+input[type=range]{width:100%;accent-color:#bbb;cursor:pointer;height:16px;}
+input[type=text],input[type=url],select,textarea{background:#1a1a1a;border:1px solid #333;color:#e0e0e0;padding:5px 8px;border-radius:4px;font-size:12px;width:100%;font-family:inherit;outline:none;transition:border-color .15s;}
+input[type=text]:focus,input[type=url]:focus,select:focus,textarea:focus{border-color:#666;}
+input[type=color]{background:#1a1a1a;border:1px solid #333;border-radius:4px;height:28px;padding:2px 3px;cursor:pointer;width:100%;}
+textarea{resize:vertical;min-height:72px;line-height:1.5;}
+select option{background:#1a1a1a;}
+.chk-row{display:flex;align-items:center;gap:8px;font-size:12px;color:#bbb;cursor:pointer;user-select:none;}
+.chk-row input[type=checkbox]{cursor:pointer;accent-color:#bbb;width:14px;height:14px;}
+.pair{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.pair .lbl{margin:0;flex:1;}
+.pair input[type=color]{width:52px;height:26px;flex-shrink:0;}
+
+/* ── BLOCK LIST ── */
+.blist{display:flex;flex-direction:column;gap:4px;}
+.bi{background:#181818;border:1px solid #252525;border-radius:4px;padding:6px 9px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:border-color .12s,background .12s;user-select:none;}
+.bi:hover{border-color:#3a3a3a;background:#1c1c1c;}
+.bi.on{border-color:#777;background:#202020;}
+.bi-handle{color:#383838;font-size:13px;cursor:grab;}
+.bi-type{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#484848;min-width:38px;}
+.bi-label{flex:1;font-size:11px;color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bi-del{color:#383838;cursor:pointer;font-size:14px;padding:2px 4px;transition:color .12s;line-height:1;}
+.bi-del:hover{color:#e05555;}
+
+/* ── ADD BUTTONS ── */
+.add-btns{display:flex;flex-wrap:wrap;gap:5px;}
+.add-btn{background:#1a1a1a;border:1px solid #3a3a3a;color:#bbb;padding:5px 11px;border-radius:4px;font-size:11px;cursor:pointer;transition:background .12s,border-color .12s,color .12s;letter-spacing:0.04em;}
+.add-btn:hover{background:#252525;border-color:#777;color:#fff;}
+
+/* ── ACTION BUTTONS ── */
+.actions{padding:10px;border-top:1px solid #1e1e1e;display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.act{background:#181818;border:1px solid #333;color:#bbb;padding:8px 10px;border-radius:4px;font-size:11px;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;width:100%;transition:border-color .12s,color .12s,background .12s;text-align:center;}
+.act:hover{border-color:#888;color:#fff;background:#202020;}
+.act.hi{border-color:#666;color:#e0e0e0;}
+.act.hi:hover{border-color:#ccc;color:#fff;}
+
+/* ── TEMPLATES ── */
+.tpl-list{display:flex;flex-direction:column;gap:4px;}
+.tpl-item{background:#181818;border:1px solid #252525;border-radius:4px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .12s;}
+.tpl-item:hover{border-color:#444;}
+.tpl-name{font-size:12px;color:#bbb;}
+.tpl-actions{display:flex;gap:8px;}
+.tpl-btn{font-size:11px;color:#555;cursor:pointer;transition:color .12s;padding:2px 4px;}
+.tpl-btn:hover{color:#ccc;}
+.tpl-btn.del:hover{color:#e05555;}
+.tpl-save-row{display:flex;gap:6px;}
+.tpl-save-row input{flex:1;}
+.tpl-save-row button{white-space:nowrap;flex-shrink:0;background:#1a1a1a;border:1px solid #3a3a3a;color:#bbb;padding:5px 10px;border-radius:4px;font-size:11px;cursor:pointer;transition:border-color .12s,color .12s;}
+.tpl-save-row button:hover{border-color:#777;color:#fff;}
+
+/* ── INFO TEXT ── */
+.info{font-size:11px;color:#484848;line-height:1.6;}
+.info code{background:#1a1a1a;padding:1px 5px;border-radius:3px;font-size:10px;font-family:'Courier New',monospace;color:#888;}
+
+/* ── PREVIEW ── */
+.preview{flex:1;background:#242424;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:28px 20px 48px;}
+.prev-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#444;margin-bottom:16px;}
+.email-outer{background:#000;position:relative;flex-shrink:0;}
+.email-stage{display:flex;justify-content:center;align-items:center;position:relative;}
+.email-rect{background:#fff;position:relative;transform-origin:center center;overflow:visible;/* size+transform by JS */}
+.email-content{display:flex;flex-direction:column;overflow:visible;/* padding/font by JS */}
+.footer-wrap{display:flex;justify-content:center;gap:12px;/* padding+bg by JS */}
+.s-ico{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-ico svg{width:16px;height:16px;}
+
+/* ── EMAIL BLOCKS ── */
+.eb{width:100%;cursor:pointer;}
+.eb.sel{outline:1.5px dashed rgba(100,140,255,0.7);outline-offset:2px;}
+.eb:hover:not(.sel){outline:1px dashed rgba(255,255,255,0.15);outline-offset:1px;}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;}
+.modal-bg.on{display:flex;}
+.modal{background:#0e0e0e;border:1px solid #2a2a2a;border-radius:8px;padding:20px;width:90%;max-width:600px;max-height:85vh;display:flex;flex-direction:column;gap:12px;}
+.modal h3{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#666;}
+.modal pre{background:#000;border:1px solid #1a1a1a;border-radius:4px;padding:12px;font-size:10.5px;color:#6eaaee;overflow-y:auto;max-height:50vh;line-height:1.6;white-space:pre-wrap;word-break:break-all;font-family:'Courier New',monospace;}
+.modal-btns{display:flex;gap:8px;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:#2a2a2a;border:1px solid #444;color:#ccc;padding:8px 16px;border-radius:5px;font-size:12px;z-index:400;opacity:0;transition:opacity .2s;pointer-events:none;}
+#toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══ SIDEBAR ═══════════════════════════════════════════════════════════════ -->
+<div class="sidebar">
+  <div class="tabs">
+    <div class="tab on"  id="t-layout"    onclick="tab('layout')">Layout</div>
+    <div class="tab"     id="t-content"   onclick="tab('content')">Content</div>
+    <div class="tab"     id="t-style"     onclick="tab('style')">Style</div>
+    <div class="tab"     id="t-templates" onclick="tab('templates')">Saved</div>
+  </div>
+
+  <!-- LAYOUT TAB -->
+  <div class="tab-panel on" id="p-layout">
+    <div class="sec">
+      <div class="sec-h">Stage size — 9:16 locked</div>
+      <div class="sec-b">
+        <div>
+          <span class="lbl">Width (px) — max 520 for email</span>
+          <div class="row"><input type="range" min="200" max="520" value="380" step="10" id="stageW" oninput="go()"><span class="val" id="v-stageW">380px</span></div>
+          <div style="font-size:10px;color:#444;margin-top:3px;" id="dimLabel">380 × 676px</div>
+        </div>
+        <div>
+          <span class="lbl">Tilt</span>
+          <div class="row"><input type="range" min="-10" max="10" step="0.5" value="-2" id="tilt" oninput="go()"><span class="val" id="v-tilt">-2°</span></div>
+        </div>
+        <div>
+          <span class="lbl">Padding — top / bottom</span>
+          <div class="row"><input type="range" min="8" max="80" value="44" id="padV" oninput="go()"><span class="val" id="v-padV">44px</span></div>
+        </div>
+        <div>
+          <span class="lbl">Padding — left / right</span>
+          <div class="row"><input type="range" min="8" max="80" value="36" id="padH" oninput="go()"><span class="val" id="v-padH">36px</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h">Colors</div>
+      <div class="sec-b">
+        <div class="pair"><span class="lbl">Background</span><input type="color" value="#000000" id="bgCol" oninput="go()"></div>
+        <div class="pair"><span class="lbl">Rectangle fill</span><input type="color" value="#ffffff" id="rectCol" oninput="go()"></div>
+        <div class="pair"><span class="lbl">Default text</span><input type="color" value="#000000" id="defTextCol" oninput="go()"></div>
+        <div>
+          <span class="lbl">Space above/below rectangle (px)</span>
+          <div class="row"><input type="range" min="0" max="80" value="24" id="stagePadding" oninput="go()"><span class="val" id="v-stagePadding">24px</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h">Rectangle border</div>
+      <div class="sec-b">
+        <div>
+          <span class="lbl">Border width (px) — 0 = none</span>
+          <div class="row"><input type="range" min="0" max="12" value="0" id="borderW" oninput="go()"><span class="val" id="v-borderW">0px</span></div>
+        </div>
+        <div class="pair"><span class="lbl">Border color</span><input type="color" value="#000000" id="borderCol" oninput="go()"></div>
+        <div>
+          <span class="lbl">Border style</span>
+          <select id="borderStyle" onchange="go()">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+            <option value="double">Double</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h">Vertical wordmark</div>
+      <div class="sec-b">
+        <label class="chk-row"><input type="checkbox" id="showWM" onchange="go()"><span>Show wordmark</span></label>
+        <div>
+          <span class="lbl">Side</span>
+          <select id="wmSide" onchange="go()"><option value="right">Right edge</option><option value="left">Left edge</option></select>
+        </div>
+        <div style="border:1px solid #2a2a2a;border-radius:4px;padding:8px;margin-top:2px;">
+          <span class="lbl" style="margin-bottom:6px;display:block;">Image (PNG recommended — use your D-DIN export)</span>
+          <input type="file" id="wmImageFile" accept="image/*" style="background:#1a1a1a;border:1px solid #333;color:#bbb;padding:4px 6px;border-radius:4px;font-size:11px;width:100%;cursor:pointer;">
+          <div id="wmImagePreview" style="margin-top:6px;display:none;">
+            <img id="wmImageThumb" style="max-width:100%;max-height:40px;opacity:0.7;">
+            <button class="add-btn" style="margin-top:5px;width:100%;" onclick="clearWMImage()">Remove image</button>
+          </div>
+          <div class="info" style="margin-top:5px;">If no image is loaded, falls back to text below.</div>
+        </div>
+        <div>
+          <span class="lbl">Hosted image URL (for export)</span>
+          <input type="url" id="wmHostedUrl" placeholder="Mailchimp Content Studio URL…" oninput="go()">
+          <div class="info" style="margin-top:4px;">Upload to Mailchimp Content Studio → copy URL → paste here. This is what actually appears in the sent email.</div>
+        </div>
+        <div>
+          <span class="lbl">Text fallback</span>
+          <input type="text" id="wmText" value="THEATER IN QUARANTINE" oninput="go()">
+        </div>
+        <div class="pair"><span class="lbl">Text color</span><input type="color" value="#ffffff" id="wmCol" oninput="go()"></div>
+        <div>
+          <span class="lbl">Font size — text fallback (px)</span>
+          <div class="row"><input type="range" min="7" max="16" value="10" id="wmSize" oninput="go()"><span class="val" id="v-wmSize">10px</span></div>
+        </div>
+        <div>
+          <span class="lbl">Size (px tall)</span>
+          <div class="row"><input type="range" min="50" max="900" value="500" id="wmHeight" oninput="go()"><span class="val" id="v-wmHeight">500px</span></div>
+        </div>
+        <div>
+          <span class="lbl">Vertical position (px from bottom)</span>
+          <div class="row"><input type="range" min="0" max="600" value="20" id="wmBottom" oninput="go()"><span class="val" id="v-wmBottom">20px</span></div>
+        </div>
+        <div>
+          <span class="lbl">Horizontal gap from rect (px)</span>
+          <div class="row"><input type="range" min="0" max="40" value="4" id="wmOffset" oninput="go()"><span class="val" id="v-wmOffset">4px</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT TAB -->
+  <div class="tab-panel" id="p-content">
+    <div class="sec">
+      <div class="sec-h">Add block</div>
+      <div class="sec-b">
+        <div class="add-btns">
+          <button class="add-btn" onclick="addBlock('text')">+ Text</button>
+          <button class="add-btn" onclick="addBlock('spacer')">+ Spacer</button>
+          <button class="add-btn" onclick="addBlock('rule')">+ Rule</button>
+          <button class="add-btn" onclick="addBlock('image')">+ Image</button>
+          <button class="add-btn" onclick="addBlock('link')">+ Link</button>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h">Blocks — drag to reorder</div>
+      <div class="sec-b" style="padding:7px;">
+        <div class="blist" id="blist"></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h">Edit selected block — changes are live</div>
+      <div class="sec-b" id="editor">
+        <div class="info">Click any block in the preview or list above to edit it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STYLE TAB -->
+  <div class="tab-panel" id="p-style">
+    <div class="sec">
+      <div class="sec-h">Default typography</div>
+      <div class="sec-b">
+        <div class="info" style="margin-bottom:2px;">Global defaults. Override per-block in the Content tab.</div>
+        <div>
+          <span class="lbl">Font</span>
+          <select id="defFont" onchange="go()">
+            <option value="'Helvetica Neue',Helvetica,Arial,sans-serif">Helvetica Neue</option>
+            <option value="Georgia,'Times New Roman',serif">Georgia</option>
+            <option value="'Courier New',Courier,monospace">Courier New</option>
+            <option value="Garamond,'Times New Roman',serif">Garamond</option>
+          </select>
+        </div>
+        <div>
+          <span class="lbl">Size (px)</span>
+          <div class="row"><input type="range" min="9" max="22" value="13" id="defSize" oninput="go()"><span class="val" id="v-defSize">13px</span></div>
+        </div>
+        <div>
+          <span class="lbl">Line height</span>
+          <div class="row"><input type="range" min="10" max="30" value="17" id="defLine" oninput="go()"><span class="val" id="v-defLine">1.7</span></div>
+        </div>
+        <div>
+          <span class="lbl">Letter spacing (em)</span>
+          <div class="row"><input type="range" min="0" max="25" value="1" id="defLetter" oninput="go()"><span class="val" id="v-defLetter">0.01em</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h">Footer / social icons</div>
+      <div class="sec-b">
+        <label class="chk-row"><input type="checkbox" id="showFooter" checked onchange="go()"><span>Show social icons</span></label>
+        <div class="pair"><span class="lbl">Icon fill</span><input type="color" value="#ffffff" id="iconFill" oninput="go()"></div>
+        <div class="pair"><span class="lbl">Icon background</span><input type="color" value="#222222" id="iconBg" oninput="go()"></div>
+        <div><span class="lbl" style="margin-top:4px;">TikTok URL</span><input type="url" id="url-tiktok" placeholder="https://tiktok.com/@…" oninput="go()"></div>
+        <div><span class="lbl">YouTube URL</span><input type="url" id="url-youtube" placeholder="https://youtube.com/…" oninput="go()"></div>
+        <div><span class="lbl">Website URL</span><input type="url" id="url-web" placeholder="https://theaterinquarantine.com" oninput="go()"></div>
+        <div><span class="lbl">Instagram URL</span><input type="url" id="url-instagram" placeholder="https://instagram.com/…" oninput="go()"></div>
+        <div><span class="lbl">Donate URL</span><input type="url" id="url-donate" placeholder="https://…" oninput="go()"></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h">Outlook behavior</div>
+      <div class="sec-b">
+        <div class="info"><code>transform:rotate()</code> is ignored by Outlook. The rectangle renders flat but still present. Exported HTML includes a comment noting this. No further workaround is needed unless you want a separate flat Outlook template.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVED TEMPLATES TAB -->
+  <div class="tab-panel" id="p-templates">
+    <div class="sec">
+      <div class="sec-h">Save current composition</div>
+      <div class="sec-b">
+        <div class="tpl-save-row">
+          <input type="text" id="tpl-name-input" placeholder="Template name…">
+          <button onclick="saveTemplate()">Save</button>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h">Saved templates</div>
+      <div class="sec-b" style="padding:7px;">
+        <div class="tpl-list" id="tpl-list">
+          <div class="info" style="padding:4px;">No saved templates yet.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h">Import / export</div>
+      <div class="sec-b">
+        <button class="add-btn" style="width:100%;text-align:center;" onclick="exportJSON()">Export composition as JSON</button>
+        <div>
+          <span class="lbl">Import JSON</span>
+          <textarea id="import-json" placeholder="Paste JSON here…" rows="4"></textarea>
+          <button class="add-btn" style="width:100%;text-align:center;margin-top:5px;" onclick="importJSON()">Import</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="act hi" onclick="exportHTML()">Export Mailchimp HTML</button>
+    <button class="act" onclick="saveToLocalStorage()">Save (auto-saved every change)</button>
+  </div>
+</div>
+
+<!-- ═══ PREVIEW ═══════════════════════════════════════════════════════════════ -->
+<div class="preview">
+  <div class="prev-label">Live preview — click any block to edit</div>
+  <div class="email-outer" id="email-outer">
+    <div class="email-stage" id="email-stage">
+      <!-- rect+wordmark share a transform wrapper so they tilt together -->
+      <div id="tilt-wrap" style="position:relative;display:inline-block;">
+        <div class="email-rect" id="email-rect">
+          <div class="email-content" id="email-content"></div>
+        </div>
+        <div id="wm-el" style="display:none;position:absolute;top:0;pointer-events:none;overflow:hidden;"></div>
+      </div>
+    </div>
+    <div class="footer-wrap" id="footer-wrap"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ EXPORT MODAL ═══════════════════════════════════════════════════════════ -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>Mailchimp HTML — paste into "Code your own"</h3>
+    <pre id="export-pre"></pre>
+    <div class="modal-btns">
+      <button class="act hi" style="flex:1;" onclick="copyHTML()">Copy to clipboard</button>
+      <button class="act"    style="flex:1;" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══ STATE ════════════════════════════════════════════════════════════════════
+let blocks = [];
+let selId  = null;
+let dragSrc = null;
+let templates = {};
+let wmImageData = null; // base64 data URL for wordmark image
+
+// ═══ HELPERS ═════════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const gv = id => $(id)?.value ?? '';
+const gn = id => parseFloat(gv(id)) || 0;
+const gc = id => $(id)?.checked ?? false;
+const uid = () => Math.random().toString(36).slice(2, 9);
+
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ═══ BLOCK FACTORY ═══════════════════════════════════════════════════════════
+function mk(type, opts = {}) {
+  const base = { id: uid(), type };
+  const defs = {
+    text:   { content: 'New text line', bold: false, italic: false, size: null, align: 'center', color: null, lineH: null, letterS: null },
+    spacer: { h: 14 },
+    rule:   { color: null, width: 40 },
+    image:  { h: 120, bleed: false, bleedAmt: 24, label: 'IMAGE', url: '', href: '' },
+    link:   { content: 'LINK TEXT', href: '#', size: null, color: '#cc0000' },
+  };
+  return Object.assign({}, defs[type] || {}, opts, base);
+}
+
+// ═══ DEFAULT BLOCKS ═══════════════════════════════════════════════════════════
+function defaultBlocks() {
+  return [
+    mk('text',   { content: 'Firstly. The Big News.', bold: true, size: 14 }),
+    mk('spacer', { h: 10 }),
+    mk('text',   { content: 'The Library of Congress\nhas acquired our archive.\n\nWe\'re honored—and a little stunned.\n\nSo to everyone who has collaborated,\ncontributed, or simply clicked play\nover the last five years\n...thank you.' }),
+    mk('spacer', { h: 20 }),
+    mk('rule',   {}),
+    mk('spacer', { h: 20 }),
+    mk('link',   { content: 'RSVP HERE', href: '#' }),
+    mk('spacer', { h: 22 }),
+    mk('text',   { content: '— Joshua William Gelb' }),
+  ];
+}
+
+// ═══ TAB SWITCHING ═══════════════════════════════════════════════════════════
+function tab(name) {
+  ['layout','content','style','templates'].forEach(n => {
+    $(  't-' + n).classList.toggle('on', n === name);
+    $('p-' + n).classList.toggle('on', n === name);
+  });
+}
+
+// ═══ MASTER RENDER ═══════════════════════════════════════════════════════════
+function go() {
+  const tilt      = gn('tilt');
+  const padV      = gn('padV');
+  const padH      = gn('padH');
+  const bg        = gv('bgCol');
+  const rc        = gv('rectCol');
+  const dtc       = gv('defTextCol');
+  const defFont   = gv('defFont');
+  const defSize   = gn('defSize');
+  const defLine   = gn('defLine');
+  const defLetter = gn('defLetter');
+  const showFoot  = gc('showFooter');
+  const iFill     = gv('iconFill');
+  const iBg       = gv('iconBg');
+  const showWM    = gc('showWM');
+  const wmText    = gv('wmText');
+  const wmSide    = gv('wmSide');
+  const wmCol     = gv('wmCol');
+  const wmSize    = gn('wmSize');
+  const borderW   = gn('borderW');
+  const borderCol = gv('borderCol');
+  const borderSty = gv('borderStyle');
+
+  // Update value labels
+  $('v-tilt').textContent      = tilt + '°';
+  $('v-padV').textContent      = padV + 'px';
+  $('v-padH').textContent      = padH + 'px';
+  $('v-defSize').textContent   = defSize + 'px';
+  $('v-defLine').textContent   = (defLine / 10).toFixed(1);
+  $('v-defLetter').textContent = (defLetter / 100).toFixed(2) + 'em';
+  $('v-wmSize').textContent    = wmSize + 'px';
+  $('v-borderW').textContent   = borderW + 'px';
+
+  // Stage dimensions — drives both preview and export
+  const w = parseInt(gv('stageW')) || 380;
+  const h = Math.round(w * 16 / 9);
+  $('v-stageW').textContent = w + 'px';
+  $('dimLabel').textContent = w + ' × ' + h + 'px';
+
+  // Wordmark sizing — width derived automatically (wmHeight / natural ratio)
+  // We use a fixed width slot in export; preview uses height+auto width
+  const wmBottom = gn('wmBottom');
+  const wmH = gn('wmHeight') || 500;
+  const wmOffset = gn('wmOffset');
+  // Estimate width from height at typical TiQ wordmark ratio (~10:1 height:width)
+  const wmWidth = Math.round(wmH / 9);
+  $('v-wmBottom').textContent = wmBottom + 'px';
+  $('v-wmHeight').textContent = wmH + 'px';
+  $('v-wmOffset').textContent = wmOffset + 'px';
+  // This means centering in the preview and in email is based on the rect, not the combined width.
+  const outer = $('email-outer');
+  outer.style.background = bg;
+  outer.style.width      = w + 'px';
+  outer.style.overflow   = 'visible';
+
+  // Stage — centers the tilt-wrap
+  const stage = $('email-stage');
+  const stagePad = gn('stagePadding') || 24;
+  $('v-stagePadding').textContent = stagePad + 'px';
+  stage.style.padding    = stagePad + 'px 0';
+  stage.style.background = bg;
+  stage.style.overflow   = 'visible';
+  stage.style.display    = 'flex';
+  stage.style.justifyContent = 'center';
+
+  // Tilt-wrap — this rotates, contains both rect and wordmark
+  const tw = $('tilt-wrap');
+  tw.style.transform       = 'rotate(' + tilt + 'deg)';
+  tw.style.transformOrigin = 'center center';
+  tw.style.position        = 'relative';
+  tw.style.display         = 'inline-block';
+  tw.style.overflow        = 'visible';
+
+  // Rect — no transform, tilt is on the wrapper
+  const rect = $('email-rect');
+  rect.style.width      = w + 'px';
+  rect.style.height     = h + 'px';
+  rect.style.background = rc;
+  rect.style.transform  = 'none';
+  rect.style.overflow   = 'hidden';
+  rect.style.display    = 'block';
+  rect.style.border     = borderW > 0 ? `${borderW}px ${borderSty} ${borderCol}` : 'none';
+
+  // Content area
+  const ec = $('email-content');
+  ec.style.padding       = padV + 'px ' + padH + 'px';
+  ec.style.fontFamily    = defFont;
+  ec.style.fontSize      = defSize + 'px';
+  ec.style.color         = dtc;
+  ec.style.lineHeight    = (defLine / 10).toFixed(2);
+  ec.style.letterSpacing = (defLetter / 100).toFixed(3) + 'em';
+  ec.style.width         = '100%';
+  ec.style.height        = h + 'px';
+  ec.style.overflow      = 'hidden';
+  ec.style.boxSizing     = 'border-box';
+
+  // Wordmark — absolutely positioned inside tilt-wrap, relative to rect edge
+  const wm = $('wm-el');
+  if (showWM) {
+    wm.style.display    = 'block';
+    wm.style.position   = 'absolute';
+    wm.style.width      = 'auto';
+    wm.style.height     = wmH + 'px';
+    // Use same calculation as export spacer: top = h - wmBottom - wmH
+    // This makes preview match export exactly
+    const wmTop = Math.max(0, h - wmBottom - wmH);
+    wm.style.top        = wmTop + 'px';
+    wm.style.bottom     = '';
+    wm.style.overflow   = 'hidden';
+
+    // Position horizontally: flush against rect edge + gap
+    // tilt-wrap is exactly rect width, so left:w = right edge of rect
+    if (wmSide === 'right') {
+      wm.style.left  = (w + wmOffset) + 'px';
+      wm.style.right = '';
+    } else {
+      wm.style.right = (w + wmOffset) + 'px';
+      wm.style.left  = '';
+    }
+
+    if (wmImageData || gv('wmHostedUrl').trim()) {
+      const previewSrc = wmImageData || gv('wmHostedUrl').trim();
+      wm.style.writingMode     = '';
+      wm.style.textOrientation = '';
+      wm.style.transform       = 'none';
+      wm.style.height          = wmH + 'px';
+      wm.style.width           = 'auto';
+      wm.innerHTML = `<img src="${previewSrc}" style="height:${wmH}px;width:auto;display:block;" alt="Theater in Quarantine">`;
+    } else {
+      wm.innerHTML             = '';
+      wm.style.display         = 'flex';
+      wm.style.alignItems      = 'center';
+      wm.style.justifyContent  = 'center';
+      wm.style.height          = (h - wmBottom) + 'px'; // text fallback fills available space
+      wm.style.writingMode     = 'vertical-rl';
+      wm.style.textOrientation = 'mixed';
+      wm.style.fontFamily      = "'Helvetica Neue',Helvetica,Arial,sans-serif";
+      wm.style.fontSize        = wmSize + 'px';
+      wm.style.fontWeight      = '700';
+      wm.style.letterSpacing   = '0.18em';
+      wm.style.textTransform   = 'uppercase';
+      wm.style.color           = wmCol;
+      wm.style.transform       = wmSide === 'right' ? 'none' : 'rotate(180deg)';
+      wm.textContent           = wmText;
+    }
+  } else {
+    wm.style.display = 'none';
+  }
+
+  // Footer
+  const fw = $('footer-wrap');
+  fw.style.background = bg;
+  fw.style.padding    = '16px 0';
+  fw.style.display    = showFoot ? 'flex' : 'none';
+  if (showFoot) renderFooter(iFill, iBg);
+
+  // Blocks
+  renderBlockEls(defFont, defSize, defLine, defLetter, dtc);
+
+  // Autosave
+  saveToLocalStorage();
+}
+
+// ═══ FOOTER ICONS ════════════════════════════════════════════════════════════
+const SVGS = {
+  tiktok: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>`,
+  yt:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>`,
+  web:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  ig:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="3"/></svg>`,
+  donate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+};
+
+function renderFooter(fill, bg) {
+  const urls = [
+    gv('url-tiktok') || '#',
+    gv('url-youtube') || '#',
+    gv('url-web') || '#',
+    gv('url-instagram') || '#',
+    gv('url-donate') || '#',
+  ];
+  $('footer-wrap').innerHTML = Object.values(SVGS).map((s, i) => {
+    const sized = s.replace('<svg ', `<svg style="width:17px;height:17px;color:${fill};" `);
+    return `<a href="${urls[i]}" target="_blank" style="text-decoration:none;"><div class="s-ico" style="background:${bg};">${sized}</div></a>`;
+  }).join('');
+}
+
+// ═══ BLOCK ELEMENTS ═══════════════════════════════════════════════════════════
+function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
+  const ec   = $('email-content');
+  const padH = gn('padH');
+  ec.innerHTML = '';
+
+  blocks.forEach(b => {
+    let el;
+    const isSel = b.id === selId;
+    const lh  = b.lineH   != null ? (b.lineH / 10).toFixed(2)   : (defLine / 10).toFixed(2);
+    const ls  = b.letterS != null ? (b.letterS / 100).toFixed(3) : (defLetter / 100).toFixed(3);
+    const col = b.color || dtc;
+
+    if (b.type === 'text') {
+      el = document.createElement('p');
+      el.style.cssText = [
+        'margin:0', 'padding:0',
+        `font-family:${defFont}`,
+        `font-size:${b.size || defSize}px`,
+        `font-weight:${b.bold ? '700' : '400'}`,
+        `font-style:${b.italic ? 'italic' : 'normal'}`,
+        `text-align:${b.align || 'center'}`,
+        `color:${col}`,
+        `line-height:${lh}`,
+        `letter-spacing:${ls}em`,
+        'white-space:pre-wrap',
+        'word-break:break-word',
+      ].join(';');
+      el.innerHTML = (b.content || '').replace(/\n/g, '<br>');
+    }
+    else if (b.type === 'spacer') {
+      el = document.createElement('div');
+      el.style.cssText = `height:${b.h || 12}px;flex-shrink:0;`;
+    }
+    else if (b.type === 'rule') {
+      el = document.createElement('div');
+      const rs = b.style || 'solid';
+      const rt = b.thickness || 1;
+      el.style.cssText = `width:${b.width || 40}px;border:0;border-top:${rt}px ${rs} ${b.color || dtc};margin:0 auto;flex-shrink:0;`;
+    }
+    else if (b.type === 'image') {
+      el = document.createElement('div');
+      const padH = gn('padH');
+      let marg = '';
+      if (b.bleed) {
+        const a = (b.bleedAmt || 0) + padH;
+        marg = `margin-left:-${a}px;margin-right:-${a}px;width:calc(100% + ${a * 2}px);`;
+      }
+      el.style.cssText = `height:${b.h || 120}px;flex-shrink:0;${marg}overflow:hidden;`;
+      if (b.url) {
+        const img = document.createElement('img');
+        img.src = b.url;
+        img.alt = b.label || '';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+        img.onerror = () => {
+          img.remove();
+          el.style.background = '#ddd';
+          el.style.display    = 'flex';
+          el.style.alignItems = 'center';
+          el.style.justifyContent = 'center';
+          el.style.fontSize   = '11px';
+          el.style.color      = '#999';
+          el.textContent      = '⚠ Could not load image';
+        };
+        el.appendChild(img);
+      } else {
+        el.style.background    = '#ddd';
+        el.style.display       = 'flex';
+        el.style.alignItems    = 'center';
+        el.style.justifyContent= 'center';
+        el.style.fontSize      = '11px';
+        el.style.letterSpacing = '0.06em';
+        el.style.color         = '#999';
+        el.textContent         = b.label || 'IMAGE';
+      }
+    }
+    else if (b.type === 'link') {
+      el = document.createElement('p');
+      el.style.cssText = [
+        'margin:0', 'padding:0', 'text-align:center',
+        `font-family:${defFont}`,
+        `font-size:${b.size || defSize}px`,
+        `color:${b.color || dtc}`,
+        'text-decoration:underline',
+        'letter-spacing:0.06em',
+        'cursor:pointer',
+      ].join(';');
+      el.textContent = b.content || 'LINK';
+    }
+
+    if (el) {
+      el.classList.add('eb');
+      el.dataset.id = b.id;
+      if (isSel) el.classList.add('sel');
+      // Wrap image in link if href set
+      let mount = el;
+      if (b.type === 'image' && b.href) {
+        const a = document.createElement('a');
+        a.href = b.href;
+        a.target = '_blank';
+        a.style.cssText = 'display:block;text-decoration:none;';
+        a.appendChild(el);
+        mount = a;
+      }
+      mount.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); selectBlock(b.id); });
+      ec.appendChild(mount);
+    }
+  });
+}
+
+// ═══ BLOCK LIST ═══════════════════════════════════════════════════════════════
+function renderBList() {
+  const bl = $('blist');
+  bl.innerHTML = '';
+  blocks.forEach((b, i) => {
+    const d = document.createElement('div');
+    d.className = 'bi' + (b.id === selId ? ' on' : '');
+    d.draggable = true;
+    const preview = b.content
+      ? (b.content.slice(0, 22).replace(/\n/g, ' ') + (b.content.length > 22 ? '…' : ''))
+      : (b.type === 'spacer' ? b.h + 'px' : '');
+    d.innerHTML = `<span class="bi-handle">⠿</span><span class="bi-type">${b.type}</span><span class="bi-label">${esc(preview)}</span><span class="bi-del" title="Delete">✕</span>`;
+    d.querySelector('.bi-del').addEventListener('click', e => { e.stopPropagation(); deleteBlock(b.id); });
+    d.addEventListener('dragstart', () => { dragSrc = i; setTimeout(() => d.style.opacity = '0.4', 0); });
+    d.addEventListener('dragend',   () => { d.style.opacity = '1'; });
+    d.addEventListener('dragover',  e => e.preventDefault());
+    d.addEventListener('drop', () => {
+      if (dragSrc === null || dragSrc === i) return;
+      const [m] = blocks.splice(dragSrc, 1);
+      blocks.splice(i, 0, m);
+      dragSrc = null;
+      render();
+    });
+    d.addEventListener('click', () => selectBlock(b.id));
+    bl.appendChild(d);
+  });
+}
+
+// ═══ SELECT + EDITOR ══════════════════════════════════════════════════════════
+function selectBlock(id) {
+  selId = id;
+  tab('content');
+  renderBList();
+  go();
+  buildEditor(blocks.find(b => b.id === id));
+}
+
+function buildEditor(b) {
+  const ed = $('editor');
+  if (!b) { ed.innerHTML = '<div class="info">Click a block to edit it.</div>'; return; }
+
+  const defLine   = gn('defLine');
+  const defLetter = gn('defLetter');
+  const defSize   = gn('defSize');
+  const dtc       = gv('defTextCol');
+
+  if (b.type === 'text') {
+    const sz = b.size   ?? defSize;
+    const lh = b.lineH  ?? defLine;
+    const ls = b.letterS ?? defLetter;
+    ed.innerHTML = `
+      <span class="lbl">Content</span>
+      <textarea id="e-content" rows="4">${esc(b.content || '')}</textarea>
+      <div style="display:flex;gap:14px;margin-top:6px;">
+        <label class="chk-row"><input type="checkbox" id="e-bold" ${b.bold ? 'checked' : ''}> Bold</label>
+        <label class="chk-row"><input type="checkbox" id="e-italic" ${b.italic ? 'checked' : ''}> Italic</label>
+      </div>
+      <span class="lbl" style="margin-top:8px;">Align</span>
+      <select id="e-align">
+        <option value="left"   ${b.align === 'left'   ? 'selected' : ''}>Left</option>
+        <option value="center" ${b.align === 'center' ? 'selected' : ''}>Center</option>
+        <option value="right"  ${b.align === 'right'  ? 'selected' : ''}>Right</option>
+      </select>
+      <span class="lbl" style="margin-top:8px;">Size (px)</span>
+      <div class="row"><input type="range" min="9" max="36" value="${sz}" id="e-size"><span class="val" id="v-e-size">${sz}px</span></div>
+      <span class="lbl" style="margin-top:8px;">Line height</span>
+      <div class="row"><input type="range" min="10" max="30" value="${lh}" id="e-line"><span class="val" id="v-e-line">${(lh / 10).toFixed(1)}</span></div>
+      <span class="lbl" style="margin-top:8px;">Letter spacing (em)</span>
+      <div class="row"><input type="range" min="0" max="30" value="${ls}" id="e-letter"><span class="val" id="v-e-letter">${(ls / 100).toFixed(2)}em</span></div>
+      <span class="lbl" style="margin-top:8px;">Color <span style="color:#444;">(overrides default)</span></span>
+      <input type="color" value="${b.color || dtc}" id="e-color">
+    `;
+    const wire = () => {
+      b.content  = $('e-content').value;
+      b.bold     = $('e-bold').checked;
+      b.italic   = $('e-italic').checked;
+      b.align    = $('e-align').value;
+      b.size     = parseInt($('e-size').value);
+      b.lineH    = parseInt($('e-line').value);
+      b.letterS  = parseInt($('e-letter').value);
+      b.color    = $('e-color').value;
+      $('v-e-size').textContent   = b.size + 'px';
+      $('v-e-line').textContent   = (b.lineH / 10).toFixed(1);
+      $('v-e-letter').textContent = (b.letterS / 100).toFixed(2) + 'em';
+      go();
+    };
+    ['e-content','e-bold','e-italic','e-align','e-size','e-line','e-letter','e-color'].forEach(id => {
+      const el = $(id);
+      if (el) el.addEventListener(el.tagName === 'TEXTAREA' || el.type === 'text' ? 'input' : 'change', wire);
+      if (el && el.type === 'range') el.addEventListener('input', wire);
+    });
+  }
+  else if (b.type === 'spacer') {
+    ed.innerHTML = `
+      <span class="lbl">Height (px)</span>
+      <div class="row"><input type="range" min="2" max="80" value="${b.h || 12}" id="e-h"><span class="val" id="v-e-h">${b.h || 12}px</span></div>
+    `;
+    $('e-h').addEventListener('input', () => {
+      b.h = parseInt($('e-h').value);
+      $('v-e-h').textContent = b.h + 'px';
+      go();
+    });
+  }
+  else if (b.type === 'rule') {
+    ed.innerHTML = `
+      <span class="lbl">Style</span>
+      <select id="e-rstyle">
+        <option value="solid"  ${(b.style||'solid')==='solid' ?'selected':''}>Solid</option>
+        <option value="dashed" ${(b.style||'')==='dashed'?'selected':''}>Dashed</option>
+        <option value="dotted" ${(b.style||'')==='dotted'?'selected':''}>Dotted</option>
+      </select>
+      <span class="lbl" style="margin-top:8px;">Thickness (px)</span>
+      <div class="row"><input type="range" min="1" max="8" value="${b.thickness||1}" id="e-rthick"><span class="val" id="v-e-rthick">${b.thickness||1}px</span></div>
+      <span class="lbl" style="margin-top:8px;">Width (px)</span>
+      <div class="row"><input type="range" min="10" max="260" value="${b.width || 40}" id="e-rw"><span class="val" id="v-e-rw">${b.width || 40}px</span></div>
+      <span class="lbl" style="margin-top:8px;">Color</span>
+      <input type="color" value="${b.color || dtc}" id="e-color">
+    `;
+    const wire = () => {
+      b.style     = $('e-rstyle').value;
+      b.thickness = parseInt($('e-rthick').value);
+      b.color     = $('e-color').value;
+      b.width     = parseInt($('e-rw').value);
+      $('v-e-rthick').textContent = b.thickness + 'px';
+      $('v-e-rw').textContent     = b.width + 'px';
+      go();
+    };
+    ['e-rstyle','e-rthick','e-rw','e-color'].forEach(id => { const el=$(id); if(el) el.addEventListener('input', wire); if(el) el.addEventListener('change', wire); });
+  }
+  else if (b.type === 'image') {
+    ed.innerHTML = `
+      <span class="lbl">Link URL (makes image clickable)</span>
+      <input type="url" id="e-href" value="${esc(b.href || '')}" placeholder="https://… (optional)">
+      <span class="lbl" style="margin-top:8px;">Load from file</span>
+      <input type="file" id="e-file" accept="image/*" style="background:#1a1a1a;border:1px solid #333;color:#bbb;padding:4px 6px;border-radius:4px;font-size:11px;width:100%;cursor:pointer;">
+      <span class="lbl" style="margin-top:8px;">— or paste a URL —</span>
+      <input type="url" id="e-url" value="${esc(b.url || '')}" placeholder="https://…">
+      <span class="lbl" style="margin-top:4px;">Alt text / label</span>
+      <input type="text" id="e-label" value="${esc(b.label || '')}">
+      <span class="lbl" style="margin-top:8px;">Height (px)</span>
+      <div class="row"><input type="range" min="40" max="500" value="${b.h || 120}" id="e-h"><span class="val" id="v-e-h">${b.h || 120}px</span></div>
+      <label class="chk-row" style="margin-top:8px;"><input type="checkbox" id="e-bleed" ${b.bleed ? 'checked' : ''}> Bleed past rectangle edges</label>
+      <div id="bleed-row" style="${b.bleed ? '' : 'display:none;'}margin-top:6px;">
+        <span class="lbl">Bleed amount (px)</span>
+        <div class="row"><input type="range" min="0" max="80" value="${b.bleedAmt || 24}" id="e-ba"><span class="val" id="v-e-ba">${b.bleedAmt || 24}px</span></div>
+      </div>
+      <div class="info" style="margin-top:8px;line-height:1.7;">
+        <strong style="color:#888;display:block;margin-bottom:4px;">How to get a hosted image URL:</strong>
+        1. In Mailchimp → Content → Content Studio<br>
+        2. Upload your image<br>
+        3. Click the image → Copy URL<br>
+        4. Paste it in the URL field above<br>
+        <span style="color:#444;margin-top:4px;display:block;">The file picker is for local preview only — it won't work in the sent email.</span>
+      </div>
+    `;
+    // File picker — converts to data URL for local preview
+    $('e-file').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        b.url = ev.target.result;
+        b.label = b.label || file.name;
+        $('e-url').value = '(local file — see note below)';
+        go();
+      };
+      reader.readAsDataURL(file);
+    });
+    const wire = () => {
+      if ($('e-url').value && !$('e-url').value.startsWith('(local')) b.url = $('e-url').value;
+      b.href     = $('e-href')?.value || '';
+      b.label    = $('e-label').value;
+      b.h        = parseInt($('e-h').value);
+      b.bleed    = $('e-bleed').checked;
+      b.bleedAmt = parseInt($('e-ba').value);
+      $('v-e-h').textContent  = b.h + 'px';
+      $('v-e-ba').textContent = b.bleedAmt + 'px';
+      $('bleed-row').style.display = b.bleed ? '' : 'none';
+      go();
+    };
+    ['e-href','e-url','e-label','e-h','e-ba'].forEach(id => { const el=$(id); if(el) el.addEventListener('input', wire); });
+    $('e-bleed').addEventListener('change', wire);
+  }
+  else if (b.type === 'link') {
+    const sz = b.size ?? defSize;
+    ed.innerHTML = `
+      <span class="lbl">Link text</span>
+      <input type="text" id="e-content" value="${esc(b.content || '')}">
+      <span class="lbl" style="margin-top:8px;">URL</span>
+      <input type="url" id="e-href" value="${esc(b.href || '#')}">
+      <span class="lbl" style="margin-top:8px;">Size (px)</span>
+      <div class="row"><input type="range" min="9" max="22" value="${sz}" id="e-size"><span class="val" id="v-e-size">${sz}px</span></div>
+      <span class="lbl" style="margin-top:8px;">Color</span>
+      <input type="color" value="${b.color || dtc}" id="e-color">
+    `;
+    const wire = () => {
+      b.content = $('e-content').value;
+      b.href    = $('e-href').value;
+      b.size    = parseInt($('e-size').value);
+      b.color   = $('e-color').value;
+      $('v-e-size').textContent = b.size + 'px';
+      go();
+    };
+    ['e-content','e-href','e-size','e-color'].forEach(id => {
+      const el = $(id);
+      if (el) el.addEventListener('input', wire);
+    });
+  }
+}
+
+// ═══ ADD / DELETE BLOCKS ══════════════════════════════════════════════════════
+function addBlock(type) {
+  const b = mk(type);
+  blocks.push(b);
+  render();
+  selectBlock(b.id);
+}
+
+function deleteBlock(id) {
+  blocks = blocks.filter(b => b.id !== id);
+  if (selId === id) {
+    selId = null;
+    $('editor').innerHTML = '<div class="info">Click a block to edit it.</div>';
+  }
+  render();
+}
+
+// ═══ FULL RENDER ══════════════════════════════════════════════════════════════
+function render() {
+  go();
+  renderBList();
+}
+
+// ═══ TEMPLATES ════════════════════════════════════════════════════════════════
+function saveTemplate() {
+  const name = $('tpl-name-input').value.trim();
+  if (!name) { toast('Enter a template name.'); return; }
+  templates[name] = { blocks: JSON.parse(JSON.stringify(blocks)), settings: captureSettings() };
+  saveToLocalStorage();
+  $('tpl-name-input').value = '';
+  renderTplList();
+  toast('Saved: ' + name);
+}
+
+function loadTemplate(name) {
+  const tpl = templates[name];
+  if (!tpl) return;
+  blocks = tpl.blocks.map(b => Object.assign({}, b, { id: uid() }));
+  selId  = null;
+  applySettings(tpl.settings);
+  render();
+  $('editor').innerHTML = '<div class="info">Template loaded. Click a block to edit.</div>';
+  tab('content');
+  toast('Loaded: ' + name);
+}
+
+function deleteTemplate(name) {
+  if (!confirm('Delete template "' + name + '"?')) return;
+  delete templates[name];
+  saveToLocalStorage();
+  renderTplList();
+}
+
+function renderTplList() {
+  const tl = $('tpl-list');
+  const names = Object.keys(templates);
+  if (!names.length) {
+    tl.innerHTML = '<div class="info" style="padding:4px;">No saved templates yet.</div>';
+    return;
+  }
+  tl.innerHTML = names.map(name => `
+    <div class="tpl-item">
+      <span class="tpl-name">${esc(name)}</span>
+      <div class="tpl-actions">
+        <span class="tpl-btn" onclick="loadTemplate('${esc(name)}')">Load</span>
+        <span class="tpl-btn del" onclick="deleteTemplate('${esc(name)}')">✕</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function captureSettings() {
+  return {
+    stageW: gv('stageW'), stagePadding: gv('stagePadding'),
+    tilt: gv('tilt'), padV: gv('padV'), padH: gv('padH'),
+    bgCol: gv('bgCol'), rectCol: gv('rectCol'), defTextCol: gv('defTextCol'),
+    defFont: gv('defFont'), defSize: gv('defSize'), defLine: gv('defLine'), defLetter: gv('defLetter'),
+    showFooter: gc('showFooter'), iconFill: gv('iconFill'), iconBg: gv('iconBg'),
+    urlTiktok: gv('url-tiktok'), urlYoutube: gv('url-youtube'), urlWeb: gv('url-web'),
+    urlInstagram: gv('url-instagram'), urlDonate: gv('url-donate'),
+    showWM: gc('showWM'), wmText: gv('wmText'), wmSide: gv('wmSide'), wmCol: gv('wmCol'), wmSize: gv('wmSize'),
+    wmWidth: gv('wmWidth'), wmOffset: gv('wmOffset'), wmHostedUrl: gv('wmHostedUrl'),
+    wmBottom: gv('wmBottom'), wmHeight: gv('wmHeight'),
+    borderW: gv('borderW'), borderCol: gv('borderCol'), borderStyle: gv('borderStyle'),
+  };
+}
+
+function applySettings(s) {
+  if (!s) return;
+  const pairs = [
+    ['stageW',s.stageW],['stagePadding',s.stagePadding],['tilt',s.tilt],['padV',s.padV],['padH',s.padH],
+    ['bgCol',s.bgCol],['rectCol',s.rectCol],['defTextCol',s.defTextCol],
+    ['defFont',s.defFont],['defSize',s.defSize],['defLine',s.defLine],['defLetter',s.defLetter],
+    ['iconFill',s.iconFill],['iconBg',s.iconBg],
+    ['url-tiktok',s.urlTiktok],['url-youtube',s.urlYoutube],['url-web',s.urlWeb],
+    ['url-instagram',s.urlInstagram],['url-donate',s.urlDonate],
+    ['wmText',s.wmText],['wmSide',s.wmSide],['wmCol',s.wmCol],['wmSize',s.wmSize],
+    ['wmWidth',s.wmWidth],['wmOffset',s.wmOffset],['wmHostedUrl',s.wmHostedUrl],
+    ['wmBottom',s.wmBottom],['wmHeight',s.wmHeight],
+    ['borderW',s.borderW],['borderCol',s.borderCol],['borderStyle',s.borderStyle],
+  ];
+  pairs.forEach(([id, val]) => { if ($(id) && val != null) $(id).value = val; });
+  if (s.showFooter != null) $('showFooter').checked = s.showFooter;
+  if (s.showWM     != null) $('showWM').checked     = s.showWM;
+}
+
+// ═══ LOCAL STORAGE ════════════════════════════════════════════════════════════
+function saveToLocalStorage() {
+  try {
+    localStorage.setItem('tiq-composer', JSON.stringify({
+      blocks,
+      settings: captureSettings(),
+      templates,
+    }));
+  } catch(e) {}
+}
+
+function loadFromLocalStorage() {
+  try {
+    const raw = localStorage.getItem('tiq-composer');
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    if (data.blocks)    blocks    = data.blocks;
+    if (data.templates) templates = data.templates;
+    if (data.settings)  applySettings(data.settings);
+    return true;
+  } catch(e) { return false; }
+}
+
+// ═══ JSON IMPORT / EXPORT ════════════════════════════════════════════════════
+function exportJSON() {
+  const data = JSON.stringify({ blocks, settings: captureSettings() }, null, 2);
+  const a = document.createElement('a');
+  a.href = 'data:application/json,' + encodeURIComponent(data);
+  a.download = 'tiq-composition.json';
+  a.click();
+}
+
+function importJSON() {
+  try {
+    const data = JSON.parse($('import-json').value);
+    if (data.blocks)   blocks = data.blocks.map(b => Object.assign({}, b, { id: uid() }));
+    if (data.settings) applySettings(data.settings);
+    selId = null;
+    render();
+    $('import-json').value = '';
+    toast('Imported.');
+  } catch(e) { toast('Invalid JSON.'); }
+}
+
+// ═══ HTML EXPORT ══════════════════════════════════════════════════════════════
+function exportHTML() {
+  const tilt    = gn('tilt');
+  const padV    = gn('padV');
+  const padH    = gn('padH');
+  const bg      = gv('bgCol');
+  const rc      = gv('rectCol');
+  const dtc     = gv('defTextCol');
+  const ff      = gv('defFont');
+  const ds      = gn('defSize');
+  const dl      = (gn('defLine') / 10).toFixed(1);
+  const dls     = (gn('defLetter') / 100).toFixed(3);
+  const borderW   = gn('borderW');
+  const borderCol = gv('borderCol');
+  const borderSty = gv('borderStyle');
+  const borderCSS = borderW > 0 ? `border:${borderW}px ${borderSty} ${borderCol};` : '';
+  const stagePadExport = gn('stagePadding') || 24;
+  const exportW = parseInt(gv('stageW')) || 380;
+  const exportH = Math.round(exportW * 16 / 9);
+  const iFill   = gv('iconFill');
+  const iBg     = gv('iconBg');
+  const showFoot = gc('showFooter');
+
+  const bhtml = blocks.map(b => {
+    const lh  = b.lineH   != null ? (b.lineH / 10).toFixed(1)    : dl;
+    const ls  = b.letterS != null ? (b.letterS / 100).toFixed(3) + 'em' : dls + 'em';
+    const col = b.color || dtc;
+
+    if (b.type === 'text') {
+      const text = (b.content || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
+      return `  <p style="margin:0;padding:0;font-family:${ff};font-size:${b.size||ds}px;font-weight:${b.bold?700:400};font-style:${b.italic?'italic':'normal'};text-align:${b.align||'center'};color:${col};line-height:${lh};letter-spacing:${ls};">${text}</p>`;
+    }
+    if (b.type === 'spacer') return `  <div style="height:${b.h}px;line-height:0;font-size:0;">&nbsp;</div>`;
+    if (b.type === 'rule') {
+      const rs = b.style || 'solid';
+      const rt = b.thickness || 1;
+      return `  <div style="width:${b.width||40}px;border:0;border-top:${rt}px ${rs} ${b.color||dtc};margin:0 auto;"></div>`;
+    }
+    if (b.type === 'image') {
+      const bleedTotal = b.bleed ? padH + (b.bleedAmt || 0) : 0;
+      const marg = b.bleed ? `margin-left:-${bleedTotal}px;margin-right:-${bleedTotal}px;` : '';      const isBase64 = b.url && b.url.startsWith('data:');
+      const srcUrl = isBase64 ? null : b.url;
+      const inner = srcUrl
+        ? `<img src="${srcUrl}" alt="${esc(b.label||'')}" width="100%" style="display:block;border:0;height:${b.h}px;object-fit:cover;" />`
+        : `<div style="height:${b.h}px;background:#eee;text-align:center;line-height:${b.h}px;font-size:11px;color:#999;font-family:sans-serif;">${isBase64 ? '⚠ LOCAL FILE — upload to Mailchimp Content Studio and replace src' : esc(b.label||'IMAGE')}</div>`;
+      const linked = b.href ? `<a href="${b.href}" style="display:block;text-decoration:none;">${inner}</a>` : inner;
+      return `  <div style="${marg}">${linked}</div>`;
+    }
+    if (b.type === 'link') {
+      return `  <p style="margin:0;text-align:center;"><a href="${b.href||'#'}" style="font-family:${ff};font-size:${b.size||ds}px;color:${b.color||dtc};text-decoration:underline;letter-spacing:0.06em;">${esc(b.content||'LINK')}</a></p>`;
+    }
+    return '';
+  }).join('\n');
+
+  const socialUrls = [
+    gv('url-tiktok')    || '#',
+    gv('url-youtube')   || '#',
+    gv('url-web')       || '#',
+    gv('url-instagram') || '#',
+    gv('url-donate')    || '#',
+  ];
+  // Unicode chars that render recognisably across email clients
+  const socialChars  = ['♪', '▶', '⊕', '◎', '$'];
+  const socialTitles = ['TikTok','YouTube','Website','Instagram','Donate'];
+
+  const foot = showFoot ? `
+<tr><td align="center" bgcolor="${bg}" style="padding:16px 0;">
+  <table cellpadding="0" cellspacing="0" border="0"><tr>
+    ${socialUrls.map((href,i) => `<td style="padding:0 6px;"><a href="${href}" title="${socialTitles[i]}" style="display:inline-block;width:36px;height:36px;border-radius:50%;background-color:${iBg};line-height:36px;text-align:center;text-decoration:none;font-size:16px;color:${iFill};font-family:Arial,sans-serif;">${socialChars[i]}</a></td>`).join('\n    ')}
+  </tr></table>
+</td></tr>` : '';
+
+  const showWMExport   = gc('showWM');
+  const wmOffsetExport = gn('wmOffset');
+  const wmSideExport   = gv('wmSide');
+  const wmHostedUrl    = gv('wmHostedUrl').trim();
+  const wmBottomExport = gn('wmBottom');
+  const wmHeightExport = gn('wmHeight') || 500;
+
+  // Wordmark cell only renders in export when a hosted URL is provided
+  const hasWMForExport = showWMExport && wmHostedUrl;
+  // Cell width: height/8 is a good estimate for a vertical wordmark PNG aspect ratio
+  const wmCellWidth = Math.round(wmHeightExport / 8) + wmOffsetExport;
+
+  // Wordmark: driven by height only. Width is auto (natural image ratio).
+  // valign=bottom + padding-bottom replaces all spacer math.
+  const wmCellHTML = hasWMForExport ? `<td width="${wmCellWidth}" style="width:${wmCellWidth}px;vertical-align:bottom;padding-bottom:${wmBottomExport}px;padding-${wmSideExport === 'right' ? 'left' : 'right'}:${wmOffsetExport}px;padding-top:0;background-color:${bg};">
+      <img src="${wmHostedUrl}" height="${wmHeightExport}" alt="Theater in Quarantine" style="display:block;border:0;height:${wmHeightExport}px;width:auto;" />
+    </td>` : '';
+
+  const rectCell = `<td align="center" style="background-color:${bg};padding:0;width:${exportW}px;">
+        <!--[if mso]>
+        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" style="width:${exportW}px;" strokecolor="none" fillcolor="${rc}">
+        <v:fill type="solid" color="${rc}"/>
+        <v:textbox inset="0,0,0,0">
+        <![endif]-->
+        <div style="background-color:${rc};display:inline-block;padding:${padV}px ${padH}px;font-family:${ff};font-size:${ds}px;color:${dtc};line-height:${dl};letter-spacing:${dls}em;width:${exportW}px;height:${exportH}px;box-sizing:border-box;overflow:hidden;${borderCSS}">
+${bhtml}
+        </div>
+        <!--[if mso]></v:textbox></v:rect><![endif]-->
+      </td>`;
+
+  const mirrorCellHTML = hasWMForExport
+    ? `<td width="${wmCellWidth}" style="width:${wmCellWidth}px;background-color:${bg};padding:0;font-size:0;line-height:0;">&nbsp;</td>`
+    : '';
+
+  const tableRow = hasWMForExport
+    ? (wmSideExport === 'right'
+        ? `<tr>${mirrorCellHTML}${rectCell}${wmCellHTML}</tr>`
+        : `<tr>${wmCellHTML}${rectCell}${mirrorCellHTML}</tr>`)
+    : `<tr>${rectCell}</tr>`;
+
+  const totalExportW = hasWMForExport ? exportW + wmCellWidth * 2 : exportW;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=${totalExportW + 32}, initial-scale=1, shrink-to-fit=no">
+<!-- TiQ Email — generated by TiQ Email Composer -->
+<style type="text/css">
+  @media only screen and (max-device-width:${totalExportW + 32}px) {
+    body { -webkit-text-size-adjust:none; }
+    table.tiq-scale { transform-origin:top center; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:${bg};">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${bg};">
+  <tr><td align="center" style="padding:${stagePadExport}px 16px;background-color:${bg};">
+
+    <table width="${totalExportW}" cellpadding="0" cellspacing="0" border="0" style="width:${totalExportW}px;">
+      ${tableRow}
+    </table>
+
+  </td></tr>
+  ${foot}
+</table>
+</body>
+</html>`;
+
+  $('export-pre').textContent = html;
+  $('modal').classList.add('on');
+}
+
+function copyHTML() {
+  navigator.clipboard.writeText($('export-pre').textContent).then(() => {
+    toast('Copied to clipboard.');
+  });
+}
+function closeModal() { $('modal').classList.remove('on'); }
+
+// ═══ UTILITIES ════════════════════════════════════════════════════════════════
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+// ═══ INIT ═════════════════════════════════════════════════════════════════════
+const restored = loadFromLocalStorage();
+if (!restored || !blocks.length) blocks = defaultBlocks();
+renderTplList();
+render();
+window.addEventListener('resize', go);
+
+// Wordmark image picker
+document.getElementById('wmImageFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    wmImageData = ev.target.result;
+    $('wmImagePreview').style.display = 'block';
+    $('wmImageThumb').src = wmImageData;
+    go();
+  };
+  reader.readAsDataURL(file);
+});
+
+function clearWMImage() {
+  wmImageData = null;
+  $('wmImageFile').value = '';
+  $('wmImagePreview').style.display = 'none';
+  go();
+}
+</script>
+</body>
+</html>
