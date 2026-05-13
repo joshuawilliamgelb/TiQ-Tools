@@ -128,8 +128,8 @@ select option{background:#1a1a1a;}
       <div class="sec-h">Stage size — 9:16 locked</div>
       <div class="sec-b">
         <div>
-          <span class="lbl">Width (px) — max 520 for email</span>
-          <div class="row"><input type="range" min="200" max="520" value="380" step="10" id="stageW" oninput="go()"><span class="val" id="v-stageW">380px</span></div>
+          <span class="lbl">Width (px) — max 360</span>
+          <div class="row"><input type="range" min="200" max="360" value="360" step="10" id="stageW" oninput="go()"><span class="val" id="v-stageW">360px</span></div>
           <div style="font-size:10px;color:#444;margin-top:3px;" id="dimLabel">380 × 676px</div>
         </div>
         <div>
@@ -140,10 +140,7 @@ select option{background:#1a1a1a;}
           <span class="lbl">Padding — top / bottom</span>
           <div class="row"><input type="range" min="8" max="80" value="44" id="padV" oninput="go()"><span class="val" id="v-padV">44px</span></div>
         </div>
-        <div>
-          <span class="lbl">Padding — left / right</span>
-          <div class="row"><input type="range" min="8" max="80" value="36" id="padH" oninput="go()"><span class="val" id="v-padH">36px</span></div>
-        </div>
+        <input type="hidden" id="padH" value="30">
       </div>
     </div>
 
@@ -412,15 +409,13 @@ function mk(type, opts = {}) {
 // ═══ DEFAULT BLOCKS ═══════════════════════════════════════════════════════════
 function defaultBlocks() {
   return [
-    mk('text',   { content: 'Firstly. The Big News.', bold: true, size: 14 }),
-    mk('spacer', { h: 10 }),
-    mk('text',   { content: 'The Library of Congress\nhas acquired our archive.\n\nWe\'re honored—and a little stunned.\n\nSo to everyone who has collaborated,\ncontributed, or simply clicked play\nover the last five years\n...thank you.' }),
-    mk('spacer', { h: 20 }),
-    mk('rule',   {}),
-    mk('spacer', { h: 20 }),
-    mk('link',   { content: 'RSVP HERE', href: '#' }),
-    mk('spacer', { h: 22 }),
-    mk('text',   { content: '— Joshua William Gelb' }),
+    mk('text', { content: 'Theater in Quarantine has a <a href="https://www.theaterinquarantine.com" style="color:#cc0000;">brand new website</a>\nwith a brand new, custom built Phantom web-player!', bold: true, size: 14, lineH: 14 }),
+    mk('text', { content: 'So unlike the YouTube video released earlier this year,\nthis version restores the interactivity of the original,\nallowing you to toggle backstage in real time!', size: 13, lineH: 14 }),
+    mk('spacer', { h: 9 }),
+    mk('image', { url: 'https://mcusercontent.com/45f87250b810d13d535755cf6/images/6f1ea581-0e76-3048-4e50-4f1e05413519.png', label: 'IMAGE', h: 82, bleed: true, bleedAmt: 66, href: 'https://www.theaterinquarantine.com/phantom_archive' }),
+    mk('spacer', { h: 3 }),
+    mk('text', { content: 'Building the player unexpectedly became my first experiment with AI-assisted web development, which I spoke about a little in a <a href="#" style="color:#cc0000;">recent video</a>.\n\nOf course, all of this arrives at a moment when TiQ\nis actively trying to determine what comes next.\nAfter a very busy stretch of productions,\ntours, and other digital experiments,\nwe\'re excited to take a step back to enter\na period of deep research and development —\nnot just around the work itself, but around the systems\nthat allow this kind of work to exist at all.\n\nWhat\'s a sustainable ecosystem for\nlive digital performance in 2026?\nWhat does it even mean to continue making\nlive digital performance in 2026?\nNow that I no longer live in the studio,\nhow can we be activating it as\nan actual micro-hybrid venue?\nSome experiments may fail, others may\nbecome the next phase of the company.\n\nIn the meantime, we\'re interested\nin unexpected conversations.\nSo if there\'s something you\'ve wanted to share:\nan idea, an invitation, a question, a possibility —\nwe\'d genuinely love to hear from you.', size: 13, lineH: 14 }),
+    mk('spacer', { h: 7 }),
   ];
 }
 
@@ -459,7 +454,6 @@ function go() {
   // Update value labels
   $('v-tilt').textContent      = tilt + '°';
   $('v-padV').textContent      = padV + 'px';
-  $('v-padH').textContent      = padH + 'px';
   $('v-defSize').textContent   = defSize + 'px';
   $('v-defLine').textContent   = (defLine / 10).toFixed(1);
   $('v-defLetter').textContent = (defLetter / 100).toFixed(2) + 'em';
@@ -467,7 +461,7 @@ function go() {
   $('v-borderW').textContent   = borderW + 'px';
 
   // Stage dimensions — drives both preview and export
-  const w = parseInt(gv('stageW')) || 380;
+  const w = parseInt(gv('stageW')) || 360;
   const h = Math.round(w * 16 / 9);
   $('v-stageW').textContent = w + 'px';
   $('dimLabel').textContent = w + ' × ' + h + 'px';
@@ -513,22 +507,12 @@ function go() {
   rect.style.background = rc;
   rect.style.transform  = 'none';
   rect.style.overflow   = 'hidden';
-  rect.style.display    = 'block';
+  rect.style.display    = 'flex';
+  rect.style.flexDirection = 'column';
   rect.style.border     = borderW > 0 ? `${borderW}px ${borderSty} ${borderCol}` : 'none';
+  rect.style.boxSizing  = 'border-box';
 
   // Content area
-  const ec = $('email-content');
-  ec.style.padding       = padV + 'px ' + padH + 'px';
-  ec.style.fontFamily    = defFont;
-  ec.style.fontSize      = defSize + 'px';
-  ec.style.color         = dtc;
-  ec.style.lineHeight    = (defLine / 10).toFixed(2);
-  ec.style.letterSpacing = (defLetter / 100).toFixed(3) + 'em';
-  ec.style.width         = '100%';
-  ec.style.height        = h + 'px';
-  ec.style.overflow      = 'hidden';
-  ec.style.boxSizing     = 'border-box';
-
   // Wordmark — absolutely positioned inside tilt-wrap, relative to rect edge
   const wm = $('wm-el');
   if (showWM) {
@@ -613,41 +597,101 @@ function renderFooter(fill, bg) {
     gv('url-instagram') || '#',
     gv('url-donate') || '#',
   ];
-  $('footer-wrap').innerHTML = Object.values(SVGS).map((s, i) => {
-    const sized = s.replace('<svg ', `<svg style="width:17px;height:17px;color:${fill};" `);
-    return `<a href="${urls[i]}" target="_blank" style="text-decoration:none;"><div class="s-ico" style="background:${bg};">${sized}</div></a>`;
+  const mc = 'https://cdn-images.mailchimp.com/icons/social-block-v2';
+  const icons = [
+    `${mc}/dark-tiktok-96.png`,
+    `${mc}/dark-youtube-96.png`,
+    `${mc}/dark-link-96.png`,
+    `${mc}/dark-instagram-96.png`,
+    null,
+  ];
+  const titles = ['TikTok','YouTube','Website','Instagram','Donate'];
+  $('footer-wrap').innerHTML = icons.map((src, i) => {
+    const inner = src
+      ? `<img src="${src}" width="40" height="40" alt="${titles[i]}" style="display:block;border:0;">`
+      : `<div style="width:40px;height:40px;border-radius:50%;background:${bg === '#000000' ? '#222' : '#000'};line-height:40px;text-align:center;font-size:18px;color:#fff;font-family:Arial,sans-serif;">$</div>`;
+    return `<a href="${urls[i]}" target="_blank" style="text-decoration:none;">${inner}</a>`;
   }).join('');
 }
 
 // ═══ BLOCK ELEMENTS ═══════════════════════════════════════════════════════════
 function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
-  const ec   = $('email-content');
-  const padH = gn('padH');
-  ec.innerHTML = '';
+  const rect  = $('email-rect');
+  const padH  = gn('padH');
+  const w     = parseInt(gv('stageW')) || 360;
+
+  // Clear rect contents but keep structure
+  $('email-content').remove && $('email-content').remove();
+  // Remove all block children from rect
+  while (rect.firstChild) rect.removeChild(rect.firstChild);
+
+  // Build segments: groups of non-bleed blocks get a padded div,
+  // bleed images get their own full-width div
+  // Add top padding spacer
+  const topSpacer = document.createElement('div');
+  topSpacer.style.cssText = `height:${gn('padV')}px;flex-shrink:0;`;
+  rect.appendChild(topSpacer);
+
+  let currentSection = null;
+
+  const flushSection = () => {
+    if (currentSection) {
+      rect.appendChild(currentSection);
+      currentSection = null;
+    }
+  };
+
+  const getSection = () => {
+    if (!currentSection) {
+      currentSection = document.createElement('div');
+      currentSection.id = 'email-content';
+      currentSection.className = 'email-content';
+      currentSection.style.cssText = `padding:0 ${padH}px;font-family:${defFont};font-size:${defSize}px;color:${dtc};line-height:${(defLine/10).toFixed(2)};letter-spacing:${(defLetter/100).toFixed(3)}em;box-sizing:border-box;`;
+    }
+    return currentSection;
+  };
 
   blocks.forEach(b => {
-    let el;
     const isSel = b.id === selId;
     const lh  = b.lineH   != null ? (b.lineH / 10).toFixed(2)   : (defLine / 10).toFixed(2);
     const ls  = b.letterS != null ? (b.letterS / 100).toFixed(3) : (defLetter / 100).toFixed(3);
     const col = b.color || dtc;
 
+    if (b.type === 'image' && b.bleed) {
+      // Bleed image — flush current section, add full-width div
+      flushSection();
+      const el = document.createElement('div');
+      el.style.cssText = `height:${b.h || 120}px;flex-shrink:0;overflow:hidden;width:100%;`;
+      if (b.url) {
+        const img = document.createElement('img');
+        img.src = b.url;
+        img.alt = b.label || '';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center;display:block;';
+        img.onerror = () => { img.remove(); el.style.background = '#ddd'; };
+        el.appendChild(img);
+      } else {
+        el.style.background = '#ddd';
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.fontSize = '11px';
+        el.style.color = '#999';
+        el.textContent = b.label || 'IMAGE';
+      }
+      el.classList.add('eb');
+      el.dataset.id = b.id;
+      if (isSel) el.classList.add('sel');
+      el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); selectBlock(b.id); });
+      rect.appendChild(el);
+      return;
+    }
+
+    // Non-bleed block — add to current padded section
+    let el;
+
     if (b.type === 'text') {
       el = document.createElement('p');
-      el.style.cssText = [
-        'margin:0', 'padding:0',
-        `font-family:${defFont}`,
-        `font-size:${b.size || defSize}px`,
-        `font-weight:${b.bold ? '700' : '400'}`,
-        `font-style:${b.italic ? 'italic' : 'normal'}`,
-        `text-align:${b.align || 'center'}`,
-        `color:${col}`,
-        `line-height:${lh}`,
-        `letter-spacing:${ls}em`,
-        'white-space:pre-wrap',
-        'word-break:break-word',
-      ].join(';');
-      // Render content as HTML so <a> tags work; newlines → <br>
+      el.style.cssText = `margin:0;padding:0;font-family:${defFont};font-size:${b.size||defSize}px;font-weight:${b.bold?'700':'400'};font-style:${b.italic?'italic':'normal'};text-align:${b.align||'center'};color:${col};line-height:${lh};letter-spacing:${ls}em;white-space:pre-wrap;word-break:break-word;`;
       el.innerHTML = (b.content || '').replace(/\n/g, '<br>');
     }
     else if (b.type === 'spacer') {
@@ -656,57 +700,28 @@ function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
     }
     else if (b.type === 'rule') {
       el = document.createElement('div');
-      const rs = b.style || 'solid';
-      const rt = b.thickness || 1;
-      el.style.cssText = `width:${b.width || 40}px;border:0;border-top:${rt}px ${rs} ${b.color || dtc};margin:0 auto;flex-shrink:0;`;
+      const rs = b.style || 'solid'; const rt = b.thickness || 1;
+      el.style.cssText = `width:${b.width||40}px;border:0;border-top:${rt}px ${rs} ${b.color||dtc};margin:0 auto;flex-shrink:0;`;
     }
     else if (b.type === 'image') {
       el = document.createElement('div');
-      const padH = gn('padH');
-      let marg = '';
-      if (b.bleed) {
-        const a = (b.bleedAmt || 0) + padH;
-        marg = `margin-left:-${a}px;margin-right:-${a}px;width:calc(100% + ${a * 2}px);`;
-      }
-      el.style.cssText = `height:${b.h || 120}px;flex-shrink:0;${marg}overflow:hidden;`;
+      el.style.cssText = `height:${b.h || 120}px;flex-shrink:0;overflow:hidden;`;
       if (b.url) {
         const img = document.createElement('img');
         img.src = b.url;
         img.alt = b.label || '';
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-        img.onerror = () => {
-          img.remove();
-          el.style.background = '#ddd';
-          el.style.display    = 'flex';
-          el.style.alignItems = 'center';
-          el.style.justifyContent = 'center';
-          el.style.fontSize   = '11px';
-          el.style.color      = '#999';
-          el.textContent      = '⚠ Could not load image';
-        };
+        img.style.cssText = 'max-width:100%;height:100%;object-fit:cover;object-position:center;display:block;margin:0 auto;';
+        img.onerror = () => { img.remove(); el.style.background='#ddd'; };
         el.appendChild(img);
       } else {
-        el.style.background    = '#ddd';
-        el.style.display       = 'flex';
-        el.style.alignItems    = 'center';
-        el.style.justifyContent= 'center';
-        el.style.fontSize      = '11px';
-        el.style.letterSpacing = '0.06em';
-        el.style.color         = '#999';
-        el.textContent         = b.label || 'IMAGE';
+        el.style.background='#ddd'; el.style.display='flex'; el.style.alignItems='center';
+        el.style.justifyContent='center'; el.style.fontSize='11px'; el.style.color='#999';
+        el.textContent = b.label || 'IMAGE';
       }
     }
     else if (b.type === 'link') {
       el = document.createElement('p');
-      el.style.cssText = [
-        'margin:0', 'padding:0', 'text-align:center',
-        `font-family:${defFont}`,
-        `font-size:${b.size || defSize}px`,
-        `color:${b.color || dtc}`,
-        'text-decoration:underline',
-        'letter-spacing:0.06em',
-        'cursor:pointer',
-      ].join(';');
+      el.style.cssText = `margin:0;padding:0;text-align:center;font-family:${defFont};font-size:${b.size||defSize}px;color:${b.color||dtc};text-decoration:underline;letter-spacing:0.06em;cursor:pointer;`;
       el.textContent = b.content || 'LINK';
     }
 
@@ -714,20 +729,24 @@ function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
       el.classList.add('eb');
       el.dataset.id = b.id;
       if (isSel) el.classList.add('sel');
-      // Wrap image in link if href set
       let mount = el;
       if (b.type === 'image' && b.href) {
         const a = document.createElement('a');
-        a.href = b.href;
-        a.target = '_blank';
+        a.href = b.href; a.target = '_blank';
         a.style.cssText = 'display:block;text-decoration:none;';
-        a.appendChild(el);
-        mount = a;
+        a.appendChild(el); mount = a;
       }
       mount.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); selectBlock(b.id); });
-      ec.appendChild(mount);
+      getSection().appendChild(mount);
     }
   });
+
+  flushSection();
+
+  // Add bottom padding spacer
+  const botSpacer = document.createElement('div');
+  botSpacer.style.cssText = `height:${gn('padV')}px;flex-shrink:0;`;
+  rect.appendChild(botSpacer);
 }
 
 // ═══ BLOCK LIST ═══════════════════════════════════════════════════════════════
@@ -930,11 +949,7 @@ function buildEditor(b) {
       <input type="text" id="e-label" value="${esc(b.label || '')}">
       <span class="lbl" style="margin-top:8px;">Height (px)</span>
       <div class="row"><input type="range" min="40" max="500" value="${b.h || 120}" id="e-h"><span class="val" id="v-e-h">${b.h || 120}px</span></div>
-      <label class="chk-row" style="margin-top:8px;"><input type="checkbox" id="e-bleed" ${b.bleed ? 'checked' : ''}> Bleed past rectangle edges</label>
-      <div id="bleed-row" style="${b.bleed ? '' : 'display:none;'}margin-top:6px;">
-        <span class="lbl">Bleed amount (px)</span>
-        <div class="row"><input type="range" min="0" max="80" value="${b.bleedAmt || 24}" id="e-ba"><span class="val" id="v-e-ba">${b.bleedAmt || 24}px</span></div>
-      </div>
+      <label class="chk-row" style="margin-top:8px;"><input type="checkbox" id="e-bleed" ${b.bleed ? 'checked' : ''}> Fill full rect width (edge to edge)</label>
       <div class="info" style="margin-top:8px;line-height:1.7;">
         <strong style="color:#888;display:block;margin-bottom:4px;">How to get a hosted image URL:</strong>
         1. In Mailchimp → Content → Content Studio<br>
@@ -963,13 +978,10 @@ function buildEditor(b) {
       b.label    = $('e-label').value;
       b.h        = parseInt($('e-h').value);
       b.bleed    = $('e-bleed').checked;
-      b.bleedAmt = parseInt($('e-ba').value);
-      $('v-e-h').textContent  = b.h + 'px';
-      $('v-e-ba').textContent = b.bleedAmt + 'px';
-      $('bleed-row').style.display = b.bleed ? '' : 'none';
+      $('v-e-h').textContent = b.h + 'px';
       go();
     };
-    ['e-href','e-url','e-label','e-h','e-ba'].forEach(id => { const el=$(id); if(el) el.addEventListener('input', wire); });
+    ['e-href','e-url','e-label','e-h'].forEach(id => { const el=$(id); if(el) el.addEventListener('input', wire); });
     $('e-bleed').addEventListener('change', wire);
   }
   else if (b.type === 'link') {
@@ -1166,44 +1178,11 @@ function exportHTML() {
   const borderSty = gv('borderStyle');
   const borderCSS = borderW > 0 ? `border:${borderW}px ${borderSty} ${borderCol};` : '';
   const stagePadExport = gn('stagePadding') || 24;
-  const exportW = parseInt(gv('stageW')) || 380;
+  const exportW = parseInt(gv('stageW')) || 360;
   const exportH = Math.round(exportW * 16 / 9);
   const iFill   = gv('iconFill');
   const iBg     = gv('iconBg');
   const showFoot = gc('showFooter');
-
-  const bhtml = blocks.map(b => {
-    const lh  = b.lineH   != null ? (b.lineH / 10).toFixed(1)    : dl;
-    const ls  = b.letterS != null ? (b.letterS / 100).toFixed(3) + 'em' : dls + 'em';
-    const col = b.color || dtc;
-
-    if (b.type === 'text') {
-      const text = (b.content || '').replace(/\n/g,'<br>');
-      return `  <p style="margin:0;padding:0;font-family:${ff};font-size:${b.size||ds}px;font-weight:${b.bold?700:400};font-style:${b.italic?'italic':'normal'};text-align:${b.align||'center'};color:${col};line-height:${lh};letter-spacing:${ls};">${text}</p>`;
-    }
-    if (b.type === 'spacer') return `  <div style="height:${b.h}px;line-height:0;font-size:0;">&nbsp;</div>`;
-    if (b.type === 'rule') {
-      const rs = b.style || 'solid';
-      const rt = b.thickness || 1;
-      return `  <div style="width:${b.width||40}px;border:0;border-top:${rt}px ${rs} ${b.color||dtc};margin:0 auto;"></div>`;
-    }
-    if (b.type === 'image') {
-      const bleedTotal = b.bleed ? padH + (b.bleedAmt || 0) : 0;
-      const imgW = exportW + (b.bleed ? bleedTotal * 2 : 0);
-      const marg = b.bleed ? `margin-left:-${bleedTotal}px;margin-right:-${bleedTotal}px;` : '';
-      const isBase64 = b.url && b.url.startsWith('data:');
-      const srcUrl = isBase64 ? null : b.url;
-      const inner = srcUrl
-        ? `<img src="${srcUrl}" alt="${esc(b.label||'')}" width="${imgW}" height="${b.h}" style="display:block;border:0;width:${imgW}px;height:${b.h}px;object-fit:cover;" />`
-        : `<div style="height:${b.h}px;background:#eee;text-align:center;line-height:${b.h}px;font-size:11px;color:#999;font-family:sans-serif;">${isBase64 ? '⚠ LOCAL FILE — upload to Mailchimp Content Studio and replace src' : esc(b.label||'IMAGE')}</div>`;
-      const linked = b.href ? `<a href="${b.href}" style="display:block;text-decoration:none;">${inner}</a>` : inner;
-      return `  <div style="${marg}overflow:hidden;">${linked}</div>`;
-    }
-    if (b.type === 'link') {
-      return `  <p style="margin:0;text-align:center;"><a href="${b.href||'#'}" style="font-family:${ff};font-size:${b.size||ds}px;color:${b.color||dtc};text-decoration:underline;letter-spacing:0.06em;">${esc(b.content||'LINK')}</a></p>`;
-    }
-    return '';
-  }).join('\n');
 
   const socialUrls = [
     gv('url-tiktok')    || '#',
@@ -1212,14 +1191,26 @@ function exportHTML() {
     gv('url-instagram') || '#',
     gv('url-donate')    || '#',
   ];
-  // Unicode chars that render recognisably across email clients
-  const socialChars  = ['♪', '▶', '⊕', '◎', '$'];
   const socialTitles = ['TikTok','YouTube','Website','Instagram','Donate'];
+
+  const mc = 'https://cdn-images.mailchimp.com/icons/social-block-v2';
+  const socialIcons = [
+    `${mc}/dark-tiktok-96.png`,
+    `${mc}/dark-youtube-96.png`,
+    `${mc}/dark-link-96.png`,
+    `${mc}/dark-instagram-96.png`,
+    null, // donate — $ in circle
+  ];
 
   const foot = showFoot ? `
 <tr><td align="center" bgcolor="${bg}" style="padding:16px 0;">
   <table cellpadding="0" cellspacing="0" border="0"><tr>
-    ${socialUrls.map((href,i) => `<td style="padding:0 6px;"><a href="${href}" title="${socialTitles[i]}" style="display:inline-block;width:36px;height:36px;border-radius:50%;background-color:${iBg};line-height:36px;text-align:center;text-decoration:none;font-size:16px;color:${iFill};font-family:Arial,sans-serif;">${socialChars[i]}</a></td>`).join('\n    ')}
+    ${socialUrls.map((href,i) => {
+      const icon = socialIcons[i]
+        ? `<img src="${socialIcons[i]}" width="40" height="40" alt="${socialTitles[i]}" style="display:block;border:0;" />`
+        : `<div style="width:40px;height:40px;border-radius:50%;background-color:${iBg};line-height:40px;text-align:center;font-size:18px;color:${iFill};font-family:Arial,sans-serif;">$</div>`;
+      return `<td style="padding:0 6px;"><a href="${href}" title="${socialTitles[i]}" style="display:block;text-decoration:none;">${icon}</a></td>`;
+    }).join('\n    ')}
   </tr></table>
 </td></tr>` : '';
 
@@ -1244,16 +1235,63 @@ function exportHTML() {
       <img src="${wmHostedUrl}" height="${wmHeightExport}" alt="Theater in Quarantine" style="display:block;border:0;height:${wmHeightExport}px;width:auto;" />
     </td>` : '';
 
+  // Build rect content as table rows — bleed images get full-width rows,
+  // everything else gets grouped into padded rows
+  const contentW = exportW - (borderW > 0 ? borderW * 2 : 0);
+  const innerW = contentW - padH * 2;
+
+  // Split blocks into segments: groups of non-bleed blocks separated by bleed images
+  const rectRows = [];
+  let currentGroup = [];
+
+  const flushGroup = () => {
+    if (currentGroup.length === 0) return;
+    const html = currentGroup.join('\n');
+    rectRows.push(`<tr><td style="padding:0 ${padH}px;background-color:${rc};">${html}</td></tr>`);
+    currentGroup = [];
+  };
+
+  blocks.forEach(b => {
+    const lh  = b.lineH   != null ? (b.lineH / 10).toFixed(1)    : dl;
+    const ls  = b.letterS != null ? (b.letterS / 100).toFixed(3) + 'em' : dls + 'em';
+    const col = b.color || dtc;
+
+    if (b.type === 'image' && b.bleed && b.url && !b.url.startsWith('data:')) {
+      flushGroup();
+      rectRows.push(`<tr><td style="padding:0;background-color:${rc};"><img src="${b.url}" width="${contentW}" alt="${esc(b.label||'')}" style="display:block;border:0;width:${contentW}px;height:${b.h}px;object-fit:cover;object-position:center;" /></td></tr>`);
+    } else if (b.type === 'text') {
+      const text = (b.content || '').replace(/\n/g,'<br>');
+      currentGroup.push(`<p style="margin:0;padding:0;font-family:${ff};font-size:${b.size||ds}px;font-weight:${b.bold?700:400};font-style:${b.italic?'italic':'normal'};text-align:${b.align||'center'};color:${col};line-height:${lh};letter-spacing:${ls};">${text}</p>`);
+    } else if (b.type === 'spacer') {
+      currentGroup.push(`<div style="height:${b.h}px;line-height:0;font-size:0;">&nbsp;</div>`);
+    } else if (b.type === 'rule') {
+      const rs = b.style || 'solid'; const rt = b.thickness || 1;
+      currentGroup.push(`<div style="width:${b.width||40}px;border:0;border-top:${rt}px ${rs} ${b.color||dtc};margin:0 auto;"></div>`);
+    } else if (b.type === 'image') {
+      const isBase64 = b.url && b.url.startsWith('data:');
+      const srcUrl = isBase64 ? null : b.url;
+      const inner = srcUrl
+        ? `<img src="${srcUrl}" width="${innerW}" style="display:block;border:0;width:${innerW}px;height:${b.h}px;object-fit:cover;object-position:center;margin:0 auto;" />`
+        : `<div style="height:${b.h}px;background:#eee;text-align:center;line-height:${b.h}px;font-size:11px;color:#999;">${esc(b.label||'IMAGE')}</div>`;
+      const linked = b.href ? `<a href="${b.href}" style="display:block;text-decoration:none;">${inner}</a>` : inner;
+      currentGroup.push(`<div style="text-align:center;">${linked}</div>`);
+    } else if (b.type === 'link') {
+      currentGroup.push(`<p style="margin:0;text-align:center;"><a href="${b.href||'#'}" style="font-family:${ff};font-size:${b.size||ds}px;color:${b.color||dtc};text-decoration:underline;letter-spacing:0.06em;">${esc(b.content||'LINK')}</a></p>`);
+    }
+  });
+  flushGroup();
+
+  // Wrap all rows in a border table
+  const rectInner = `<table width="${contentW}" cellpadding="0" cellspacing="0" border="0" style="width:${contentW}px;background-color:${rc};">
+    <tr><td height="${padV}" style="height:${padV}px;line-height:0;font-size:0;background-color:${rc};">&nbsp;</td></tr>
+${rectRows.join('\n')}
+    <tr><td height="${padV}" style="height:${padV}px;line-height:0;font-size:0;background-color:${rc};">&nbsp;</td></tr>
+  </table>`;
+
   const rectCell = `<td align="center" style="background-color:${bg};padding:0;width:${exportW}px;">
-        <!--[if mso]>
-        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" style="width:${exportW}px;" strokecolor="none" fillcolor="${rc}">
-        <v:fill type="solid" color="${rc}"/>
-        <v:textbox inset="0,0,0,0">
-        <![endif]-->
-        <div class="tiq-rect" style="background-color:${rc};display:inline-block;padding:${padV}px ${padH}px;font-family:${ff};font-size:${ds}px;color:${dtc};line-height:${dl};letter-spacing:${dls}em;width:${exportW}px;height:${exportH}px;min-height:${exportH}px;max-height:${exportH}px;box-sizing:border-box;overflow:hidden;${borderCSS}">
-${bhtml}
+        <div style="width:${exportW}px;${borderCSS}overflow:hidden;box-sizing:border-box;">
+${rectInner}
         </div>
-        <!--[if mso]></v:textbox></v:rect><![endif]-->
       </td>`;
 
   const mirrorCellHTML = hasWMForExport
@@ -1268,6 +1306,13 @@ ${bhtml}
 
   const totalExportW = hasWMForExport ? exportW + wmCellWidth * 2 : exportW;
 
+  // ── Mobile plain-text version ──
+  // Strip HTML tags from content, render as simple centered paragraphs
+  // Mobile version uses identical content to desktop — same line breaks, same formatting
+  // Only difference: fluid container, no fixed height, no wordmark
+  // Mobile uses same table structure as desktop but without the fixed height
+  const mobileHTML = rectRows.join('\n');
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1276,22 +1321,39 @@ ${bhtml}
 <!-- TiQ Email — generated by TiQ Email Composer -->
 <style type="text/css">
   @media only screen and (max-width:600px) {
-    .tiq-wm { display:none !important; }
-    .tiq-mirror { display:none !important; }
+    .tiq-desktop { display:none !important; max-height:0 !important; overflow:hidden !important; mso-hide:all !important; }
+    .tiq-mobile  { display:block !important; max-height:none !important; overflow:visible !important; }
   }
 </style>
 </head>
 <body style="margin:0;padding:0;background-color:${bg};">
+
+<!-- ═ DESKTOP VERSION ═ -->
+<div class="tiq-desktop">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${bg};">
   <tr><td align="center" style="padding:${stagePadExport}px 16px;background-color:${bg};">
-
     <table class="tiq-wrap" width="${totalExportW}" cellpadding="0" cellspacing="0" border="0" style="width:${totalExportW}px;max-width:${totalExportW}px;">
       ${tableRow}
     </table>
-
   </td></tr>
   ${foot}
 </table>
+</div>
+
+<!-- ═ MOBILE VERSION — same content as desktop, no wordmark, fluid height ═ -->
+<div class="tiq-mobile" style="max-height:0;overflow:hidden;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${bg};">
+  <tr><td align="center" style="padding:${stagePadExport}px 0;background-color:${bg};">
+    <table width="${exportW}" cellpadding="0" cellspacing="0" border="0" style="width:${exportW}px;${borderCSS}background-color:${rc};">
+      <tr><td height="${padV}" style="height:${padV}px;line-height:0;font-size:0;">&nbsp;</td></tr>
+      ${mobileHTML}
+      <tr><td height="${padV}" style="height:${padV}px;line-height:0;font-size:0;">&nbsp;</td></tr>
+    </table>
+  </td></tr>
+  ${foot}
+</table>
+</div>
+
 </body>
 </html>`;
 
@@ -1317,7 +1379,25 @@ function esc(s) {
 
 // ═══ INIT ═════════════════════════════════════════════════════════════════════
 const restored = loadFromLocalStorage();
-if (!restored || !blocks.length) blocks = defaultBlocks();
+if (!restored || !blocks.length) {
+  blocks = defaultBlocks();
+  // Apply Phantom email settings as defaults for local testing
+  setTimeout(() => {
+    const el = id => document.getElementById(id);
+    el('stageW').value    = '360';
+    el('borderW').value   = '3';
+    el('borderCol').value = '#000000';
+    el('padV').value      = '21';
+    el('padH').value      = '30';
+    el('defLine').value   = '14';
+    el('showWM').checked  = true;
+    el('wmHostedUrl').value = 'https://mcusercontent.com/45f87250b810d13d535755cf6/images/311bdfd0-3906-b36d-0f09-1580ea29f143.png';
+    el('wmHeight').value  = '561';
+    el('wmBottom').value  = '0';
+    el('wmOffset').value  = '7';
+    render();
+  }, 50);
+}
 renderTplList();
 render();
 window.addEventListener('resize', go);
