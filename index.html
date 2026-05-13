@@ -8,7 +8,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#111;color:#fff;font-size:13px;overflow:hidden;}
 .app{display:flex;height:100vh;}
-
+ 
 /* ── SIDEBAR ── */
 .sidebar{width:268px;min-width:268px;background:#0e0e0e;border-right:1px solid #1e1e1e;display:flex;flex-direction:column;overflow:hidden;}
 .tabs{display:flex;border-bottom:1px solid #1e1e1e;flex-shrink:0;}
@@ -17,12 +17,12 @@ html,body{height:100%;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;ba
 .tab.on{color:#fff;border-bottom-color:#fff;}
 .tab-panel{display:none;flex-direction:column;overflow-y:auto;flex:1;padding:10px;gap:7px;}
 .tab-panel.on{display:flex;}
-
+ 
 /* ── SECTIONS ── */
 .sec{border:1px solid #222;border-radius:5px;overflow:hidden;flex-shrink:0;}
 .sec-h{background:#181818;padding:6px 10px;font-size:9.5px;letter-spacing:0.11em;text-transform:uppercase;color:#666;}
 .sec-b{padding:10px;display:flex;flex-direction:column;gap:8px;}
-
+ 
 /* ── FORM CONTROLS ── */
 .lbl{display:block;font-size:10px;color:#666;letter-spacing:0.05em;margin-bottom:3px;}
 .row{display:flex;align-items:center;gap:8px;}
@@ -39,7 +39,7 @@ select option{background:#1a1a1a;}
 .pair{display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .pair .lbl{margin:0;flex:1;}
 .pair input[type=color]{width:52px;height:26px;flex-shrink:0;}
-
+ 
 /* ── BLOCK LIST ── */
 .blist{display:flex;flex-direction:column;gap:4px;}
 .bi{background:#181818;border:1px solid #252525;border-radius:4px;padding:6px 9px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:border-color .12s,background .12s;user-select:none;}
@@ -50,19 +50,19 @@ select option{background:#1a1a1a;}
 .bi-label{flex:1;font-size:11px;color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .bi-del{color:#383838;cursor:pointer;font-size:14px;padding:2px 4px;transition:color .12s;line-height:1;}
 .bi-del:hover{color:#e05555;}
-
+ 
 /* ── ADD BUTTONS ── */
 .add-btns{display:flex;flex-wrap:wrap;gap:5px;}
 .add-btn{background:#1a1a1a;border:1px solid #3a3a3a;color:#bbb;padding:5px 11px;border-radius:4px;font-size:11px;cursor:pointer;transition:background .12s,border-color .12s,color .12s;letter-spacing:0.04em;}
 .add-btn:hover{background:#252525;border-color:#777;color:#fff;}
-
+ 
 /* ── ACTION BUTTONS ── */
 .actions{padding:10px;border-top:1px solid #1e1e1e;display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
 .act{background:#181818;border:1px solid #333;color:#bbb;padding:8px 10px;border-radius:4px;font-size:11px;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;width:100%;transition:border-color .12s,color .12s,background .12s;text-align:center;}
 .act:hover{border-color:#888;color:#fff;background:#202020;}
 .act.hi{border-color:#666;color:#e0e0e0;}
 .act.hi:hover{border-color:#ccc;color:#fff;}
-
+ 
 /* ── TEMPLATES ── */
 .tpl-list{display:flex;flex-direction:column;gap:4px;}
 .tpl-item{background:#181818;border:1px solid #252525;border-radius:4px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .12s;}
@@ -76,11 +76,11 @@ select option{background:#1a1a1a;}
 .tpl-save-row input{flex:1;}
 .tpl-save-row button{white-space:nowrap;flex-shrink:0;background:#1a1a1a;border:1px solid #3a3a3a;color:#bbb;padding:5px 10px;border-radius:4px;font-size:11px;cursor:pointer;transition:border-color .12s,color .12s;}
 .tpl-save-row button:hover{border-color:#777;color:#fff;}
-
+ 
 /* ── INFO TEXT ── */
 .info{font-size:11px;color:#484848;line-height:1.6;}
 .info code{background:#1a1a1a;padding:1px 5px;border-radius:3px;font-size:10px;font-family:'Courier New',monospace;color:#888;}
-
+ 
 /* ── PREVIEW ── */
 .preview{flex:1;background:#242424;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:28px 20px 48px;}
 .prev-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#444;margin-bottom:16px;}
@@ -91,12 +91,12 @@ select option{background:#1a1a1a;}
 .footer-wrap{display:flex;justify-content:center;gap:12px;/* padding+bg by JS */}
 .s-ico{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .s-ico svg{width:16px;height:16px;}
-
+ 
 /* ── EMAIL BLOCKS ── */
 .eb{width:100%;cursor:pointer;}
 .eb.sel{outline:1.5px dashed rgba(100,140,255,0.7);outline-offset:2px;}
 .eb:hover:not(.sel){outline:1px dashed rgba(255,255,255,0.15);outline-offset:1px;}
-
+ 
 /* ── MODAL ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;}
 .modal-bg.on{display:flex;}
@@ -104,7 +104,7 @@ select option{background:#1a1a1a;}
 .modal h3{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#666;}
 .modal pre{background:#000;border:1px solid #1a1a1a;border-radius:4px;padding:12px;font-size:10.5px;color:#6eaaee;overflow-y:auto;max-height:50vh;line-height:1.6;white-space:pre-wrap;word-break:break-all;font-family:'Courier New',monospace;}
 .modal-btns{display:flex;gap:8px;}
-
+ 
 /* ── TOAST ── */
 #toast{position:fixed;bottom:24px;right:24px;background:#2a2a2a;border:1px solid #444;color:#ccc;padding:8px 16px;border-radius:5px;font-size:12px;z-index:400;opacity:0;transition:opacity .2s;pointer-events:none;}
 #toast.show{opacity:1;}
@@ -112,7 +112,7 @@ select option{background:#1a1a1a;}
 </head>
 <body>
 <div class="app">
-
+ 
 <!-- ═══ SIDEBAR ═══════════════════════════════════════════════════════════════ -->
 <div class="sidebar">
   <div class="tabs">
@@ -121,7 +121,7 @@ select option{background:#1a1a1a;}
     <div class="tab"     id="t-style"     onclick="tab('style')">Style</div>
     <div class="tab"     id="t-templates" onclick="tab('templates')">Saved</div>
   </div>
-
+ 
   <!-- LAYOUT TAB -->
   <div class="tab-panel on" id="p-layout">
     <div class="sec">
@@ -146,7 +146,7 @@ select option{background:#1a1a1a;}
         </div>
       </div>
     </div>
-
+ 
     <div class="sec">
       <div class="sec-h">Colors</div>
       <div class="sec-b">
@@ -178,7 +178,7 @@ select option{background:#1a1a1a;}
         </div>
       </div>
     </div>
-
+ 
     <div class="sec">
       <div class="sec-h">Vertical wordmark</div>
       <div class="sec-b">
@@ -225,7 +225,7 @@ select option{background:#1a1a1a;}
       </div>
     </div>
   </div>
-
+ 
   <!-- CONTENT TAB -->
   <div class="tab-panel" id="p-content">
     <div class="sec">
@@ -253,7 +253,7 @@ select option{background:#1a1a1a;}
       </div>
     </div>
   </div>
-
+ 
   <!-- STYLE TAB -->
   <div class="tab-panel" id="p-style">
     <div class="sec">
@@ -303,7 +303,7 @@ select option{background:#1a1a1a;}
       </div>
     </div>
   </div>
-
+ 
   <!-- SAVED TEMPLATES TAB -->
   <div class="tab-panel" id="p-templates">
     <div class="sec">
@@ -335,13 +335,13 @@ select option{background:#1a1a1a;}
       </div>
     </div>
   </div>
-
+ 
   <div class="actions">
     <button class="act hi" onclick="exportHTML()">Export Mailchimp HTML</button>
     <button class="act" onclick="saveToLocalStorage()">Save (auto-saved every change)</button>
   </div>
 </div>
-
+ 
 <!-- ═══ PREVIEW ═══════════════════════════════════════════════════════════════ -->
 <div class="preview">
   <div class="prev-label">Live preview — click any block to edit</div>
@@ -359,7 +359,7 @@ select option{background:#1a1a1a;}
   </div>
 </div>
 </div>
-
+ 
 <!-- ═══ EXPORT MODAL ═══════════════════════════════════════════════════════════ -->
 <div class="modal-bg" id="modal">
   <div class="modal">
@@ -371,9 +371,9 @@ select option{background:#1a1a1a;}
     </div>
   </div>
 </div>
-
+ 
 <div id="toast"></div>
-
+ 
 <script>
 // ═══ STATE ════════════════════════════════════════════════════════════════════
 let blocks = [];
@@ -381,21 +381,21 @@ let selId  = null;
 let dragSrc = null;
 let templates = {};
 let wmImageData = null; // base64 data URL for wordmark image
-
+ 
 // ═══ HELPERS ═════════════════════════════════════════════════════════════════
 const $ = id => document.getElementById(id);
 const gv = id => $(id)?.value ?? '';
 const gn = id => parseFloat(gv(id)) || 0;
 const gc = id => $(id)?.checked ?? false;
 const uid = () => Math.random().toString(36).slice(2, 9);
-
+ 
 function toast(msg) {
   const t = $('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2200);
 }
-
+ 
 // ═══ BLOCK FACTORY ═══════════════════════════════════════════════════════════
 function mk(type, opts = {}) {
   const base = { id: uid(), type };
@@ -408,7 +408,7 @@ function mk(type, opts = {}) {
   };
   return Object.assign({}, defs[type] || {}, opts, base);
 }
-
+ 
 // ═══ DEFAULT BLOCKS ═══════════════════════════════════════════════════════════
 function defaultBlocks() {
   return [
@@ -423,7 +423,7 @@ function defaultBlocks() {
     mk('text',   { content: '— Joshua William Gelb' }),
   ];
 }
-
+ 
 // ═══ TAB SWITCHING ═══════════════════════════════════════════════════════════
 function tab(name) {
   ['layout','content','style','templates'].forEach(n => {
@@ -431,7 +431,7 @@ function tab(name) {
     $('p-' + n).classList.toggle('on', n === name);
   });
 }
-
+ 
 // ═══ MASTER RENDER ═══════════════════════════════════════════════════════════
 function go() {
   const tilt      = gn('tilt');
@@ -455,7 +455,7 @@ function go() {
   const borderW   = gn('borderW');
   const borderCol = gv('borderCol');
   const borderSty = gv('borderStyle');
-
+ 
   // Update value labels
   $('v-tilt').textContent      = tilt + '°';
   $('v-padV').textContent      = padV + 'px';
@@ -465,13 +465,13 @@ function go() {
   $('v-defLetter').textContent = (defLetter / 100).toFixed(2) + 'em';
   $('v-wmSize').textContent    = wmSize + 'px';
   $('v-borderW').textContent   = borderW + 'px';
-
+ 
   // Stage dimensions — drives both preview and export
   const w = parseInt(gv('stageW')) || 380;
   const h = Math.round(w * 16 / 9);
   $('v-stageW').textContent = w + 'px';
   $('dimLabel').textContent = w + ' × ' + h + 'px';
-
+ 
   // Wordmark sizing — width derived automatically (wmHeight / natural ratio)
   // We use a fixed width slot in export; preview uses height+auto width
   const wmBottom = gn('wmBottom');
@@ -487,7 +487,7 @@ function go() {
   outer.style.background = bg;
   outer.style.width      = w + 'px';
   outer.style.overflow   = 'visible';
-
+ 
   // Stage — centers the tilt-wrap
   const stage = $('email-stage');
   const stagePad = gn('stagePadding') || 24;
@@ -497,7 +497,7 @@ function go() {
   stage.style.overflow   = 'visible';
   stage.style.display    = 'flex';
   stage.style.justifyContent = 'center';
-
+ 
   // Tilt-wrap — this rotates, contains both rect and wordmark
   const tw = $('tilt-wrap');
   tw.style.transform       = 'rotate(' + tilt + 'deg)';
@@ -505,7 +505,7 @@ function go() {
   tw.style.position        = 'relative';
   tw.style.display         = 'inline-block';
   tw.style.overflow        = 'visible';
-
+ 
   // Rect — no transform, tilt is on the wrapper
   const rect = $('email-rect');
   rect.style.width      = w + 'px';
@@ -515,7 +515,7 @@ function go() {
   rect.style.overflow   = 'hidden';
   rect.style.display    = 'block';
   rect.style.border     = borderW > 0 ? `${borderW}px ${borderSty} ${borderCol}` : 'none';
-
+ 
   // Content area
   const ec = $('email-content');
   ec.style.padding       = padV + 'px ' + padH + 'px';
@@ -528,7 +528,7 @@ function go() {
   ec.style.height        = h + 'px';
   ec.style.overflow      = 'hidden';
   ec.style.boxSizing     = 'border-box';
-
+ 
   // Wordmark — absolutely positioned inside tilt-wrap, relative to rect edge
   const wm = $('wm-el');
   if (showWM) {
@@ -542,7 +542,7 @@ function go() {
     wm.style.top        = wmTop + 'px';
     wm.style.bottom     = '';
     wm.style.overflow   = 'hidden';
-
+ 
     // Position horizontally: flush against rect edge + gap
     // tilt-wrap is exactly rect width, so left:w = right edge of rect
     if (wmSide === 'right') {
@@ -552,7 +552,7 @@ function go() {
       wm.style.right = (w + wmOffset) + 'px';
       wm.style.left  = '';
     }
-
+ 
     if (wmImageData || gv('wmHostedUrl').trim()) {
       const previewSrc = wmImageData || gv('wmHostedUrl').trim();
       wm.style.writingMode     = '';
@@ -581,21 +581,21 @@ function go() {
   } else {
     wm.style.display = 'none';
   }
-
+ 
   // Footer
   const fw = $('footer-wrap');
   fw.style.background = bg;
   fw.style.padding    = '16px 0';
   fw.style.display    = showFoot ? 'flex' : 'none';
   if (showFoot) renderFooter(iFill, iBg);
-
+ 
   // Blocks
   renderBlockEls(defFont, defSize, defLine, defLetter, dtc);
-
+ 
   // Autosave
   saveToLocalStorage();
 }
-
+ 
 // ═══ FOOTER ICONS ════════════════════════════════════════════════════════════
 const SVGS = {
   tiktok: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>`,
@@ -604,7 +604,7 @@ const SVGS = {
   ig:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="3"/></svg>`,
   donate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
 };
-
+ 
 function renderFooter(fill, bg) {
   const urls = [
     gv('url-tiktok') || '#',
@@ -618,20 +618,20 @@ function renderFooter(fill, bg) {
     return `<a href="${urls[i]}" target="_blank" style="text-decoration:none;"><div class="s-ico" style="background:${bg};">${sized}</div></a>`;
   }).join('');
 }
-
+ 
 // ═══ BLOCK ELEMENTS ═══════════════════════════════════════════════════════════
 function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
   const ec   = $('email-content');
   const padH = gn('padH');
   ec.innerHTML = '';
-
+ 
   blocks.forEach(b => {
     let el;
     const isSel = b.id === selId;
     const lh  = b.lineH   != null ? (b.lineH / 10).toFixed(2)   : (defLine / 10).toFixed(2);
     const ls  = b.letterS != null ? (b.letterS / 100).toFixed(3) : (defLetter / 100).toFixed(3);
     const col = b.color || dtc;
-
+ 
     if (b.type === 'text') {
       el = document.createElement('p');
       el.style.cssText = [
@@ -647,6 +647,7 @@ function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
         'white-space:pre-wrap',
         'word-break:break-word',
       ].join(';');
+      // Render content as HTML so <a> tags work; newlines → <br>
       el.innerHTML = (b.content || '').replace(/\n/g, '<br>');
     }
     else if (b.type === 'spacer') {
@@ -708,7 +709,7 @@ function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
       ].join(';');
       el.textContent = b.content || 'LINK';
     }
-
+ 
     if (el) {
       el.classList.add('eb');
       el.dataset.id = b.id;
@@ -728,7 +729,7 @@ function renderBlockEls(defFont, defSize, defLine, defLetter, dtc) {
     }
   });
 }
-
+ 
 // ═══ BLOCK LIST ═══════════════════════════════════════════════════════════════
 function renderBList() {
   const bl = $('blist');
@@ -756,7 +757,7 @@ function renderBList() {
     bl.appendChild(d);
   });
 }
-
+ 
 // ═══ SELECT + EDITOR ══════════════════════════════════════════════════════════
 function selectBlock(id) {
   selId = id;
@@ -765,23 +766,36 @@ function selectBlock(id) {
   go();
   buildEditor(blocks.find(b => b.id === id));
 }
-
+ 
 function buildEditor(b) {
   const ed = $('editor');
   if (!b) { ed.innerHTML = '<div class="info">Click a block to edit it.</div>'; return; }
-
+ 
   const defLine   = gn('defLine');
   const defLetter = gn('defLetter');
   const defSize   = gn('defSize');
   const dtc       = gv('defTextCol');
-
+ 
   if (b.type === 'text') {
     const sz = b.size   ?? defSize;
     const lh = b.lineH  ?? defLine;
     const ls = b.letterS ?? defLetter;
     ed.innerHTML = `
       <span class="lbl">Content</span>
-      <textarea id="e-content" rows="4">${esc(b.content || '')}</textarea>
+      <textarea id="e-content" rows="4" style="font-family:monospace;font-size:11px;">${esc(b.content || '')}</textarea>
+      <div style="margin-top:5px;">
+        <button id="e-linkbtn" class="add-btn" style="width:100%;text-align:center;padding:6px;">
+          🔗 Link selected text
+        </button>
+        <div id="e-linkrow" style="display:none;margin-top:5px;display:none;">
+          <input type="url" id="e-linkurl" placeholder="https://…" style="margin-bottom:4px;">
+          <div style="display:flex;gap:6px;">
+            <button id="e-linkconfirm" class="add-btn" style="flex:1;text-align:center;">Apply</button>
+            <button id="e-linkcancel" class="add-btn" style="flex:1;text-align:center;">Cancel</button>
+          </div>
+        </div>
+        <div class="info" style="margin-top:4px;">Select text above, click Link, paste URL.</div>
+      </div>
       <div style="display:flex;gap:14px;margin-top:6px;">
         <label class="chk-row"><input type="checkbox" id="e-bold" ${b.bold ? 'checked' : ''}> Bold</label>
         <label class="chk-row"><input type="checkbox" id="e-italic" ${b.italic ? 'checked' : ''}> Italic</label>
@@ -819,6 +833,32 @@ function buildEditor(b) {
       const el = $(id);
       if (el) el.addEventListener(el.tagName === 'TEXTAREA' || el.type === 'text' ? 'input' : 'change', wire);
       if (el && el.type === 'range') el.addEventListener('input', wire);
+    });
+ 
+    // Link button — wraps selected text in <a href="">
+    $('e-linkbtn').addEventListener('click', () => {
+      const row = $('e-linkrow');
+      row.style.display = row.style.display === 'none' ? 'block' : 'none';
+      if (row.style.display === 'block') $('e-linkurl').focus();
+    });
+    $('e-linkcancel').addEventListener('click', () => {
+      $('e-linkrow').style.display = 'none';
+      $('e-linkurl').value = '';
+    });
+    $('e-linkconfirm').addEventListener('click', () => {
+      const ta = $('e-content');
+      const url = $('e-linkurl').value.trim();
+      if (!url) return;
+      const start = ta.selectionStart;
+      const end   = ta.selectionEnd;
+      const selected = ta.value.slice(start, end);
+      if (!selected) { alert('Select some text first, then click Apply.'); return; }
+      const linkHTML = `<a href="${url}" style="color:#cc0000;">${selected}</a>`;
+      ta.value = ta.value.slice(0, start) + linkHTML + ta.value.slice(end);
+      b.content = ta.value;
+      $('e-linkrow').style.display = 'none';
+      $('e-linkurl').value = '';
+      go();
     });
   }
   else if (b.type === 'spacer') {
@@ -938,7 +978,7 @@ function buildEditor(b) {
     });
   }
 }
-
+ 
 // ═══ ADD / DELETE BLOCKS ══════════════════════════════════════════════════════
 function addBlock(type) {
   const b = mk(type);
@@ -946,7 +986,7 @@ function addBlock(type) {
   render();
   selectBlock(b.id);
 }
-
+ 
 function deleteBlock(id) {
   blocks = blocks.filter(b => b.id !== id);
   if (selId === id) {
@@ -955,13 +995,13 @@ function deleteBlock(id) {
   }
   render();
 }
-
+ 
 // ═══ FULL RENDER ══════════════════════════════════════════════════════════════
 function render() {
   go();
   renderBList();
 }
-
+ 
 // ═══ TEMPLATES ════════════════════════════════════════════════════════════════
 function saveTemplate() {
   const name = $('tpl-name-input').value.trim();
@@ -972,7 +1012,7 @@ function saveTemplate() {
   renderTplList();
   toast('Saved: ' + name);
 }
-
+ 
 function loadTemplate(name) {
   const tpl = templates[name];
   if (!tpl) return;
@@ -984,14 +1024,14 @@ function loadTemplate(name) {
   tab('content');
   toast('Loaded: ' + name);
 }
-
+ 
 function deleteTemplate(name) {
   if (!confirm('Delete template "' + name + '"?')) return;
   delete templates[name];
   saveToLocalStorage();
   renderTplList();
 }
-
+ 
 function renderTplList() {
   const tl = $('tpl-list');
   const names = Object.keys(templates);
@@ -1009,7 +1049,7 @@ function renderTplList() {
     </div>
   `).join('');
 }
-
+ 
 function captureSettings() {
   return {
     stageW: gv('stageW'), stagePadding: gv('stagePadding'),
@@ -1025,7 +1065,7 @@ function captureSettings() {
     borderW: gv('borderW'), borderCol: gv('borderCol'), borderStyle: gv('borderStyle'),
   };
 }
-
+ 
 function applySettings(s) {
   if (!s) return;
   const pairs = [
@@ -1044,7 +1084,7 @@ function applySettings(s) {
   if (s.showFooter != null) $('showFooter').checked = s.showFooter;
   if (s.showWM     != null) $('showWM').checked     = s.showWM;
 }
-
+ 
 // ═══ LOCAL STORAGE ════════════════════════════════════════════════════════════
 function saveToLocalStorage() {
   try {
@@ -1055,7 +1095,7 @@ function saveToLocalStorage() {
     }));
   } catch(e) {}
 }
-
+ 
 function loadFromLocalStorage() {
   try {
     const raw = localStorage.getItem('tiq-composer');
@@ -1067,7 +1107,7 @@ function loadFromLocalStorage() {
     return true;
   } catch(e) { return false; }
 }
-
+ 
 // ═══ JSON IMPORT / EXPORT ════════════════════════════════════════════════════
 function exportJSON() {
   const data = JSON.stringify({ blocks, settings: captureSettings() }, null, 2);
@@ -1076,7 +1116,7 @@ function exportJSON() {
   a.download = 'tiq-composition.json';
   a.click();
 }
-
+ 
 function importJSON() {
   try {
     const data = JSON.parse($('import-json').value);
@@ -1088,7 +1128,7 @@ function importJSON() {
     toast('Imported.');
   } catch(e) { toast('Invalid JSON.'); }
 }
-
+ 
 // ═══ HTML EXPORT ══════════════════════════════════════════════════════════════
 function exportHTML() {
   const tilt    = gn('tilt');
@@ -1111,14 +1151,15 @@ function exportHTML() {
   const iFill   = gv('iconFill');
   const iBg     = gv('iconBg');
   const showFoot = gc('showFooter');
-
+ 
   const bhtml = blocks.map(b => {
     const lh  = b.lineH   != null ? (b.lineH / 10).toFixed(1)    : dl;
     const ls  = b.letterS != null ? (b.letterS / 100).toFixed(3) + 'em' : dls + 'em';
     const col = b.color || dtc;
-
+ 
     if (b.type === 'text') {
-      const text = (b.content || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
+      // Preserve <a> tags — only convert newlines, don't escape < or >
+      const text = (b.content || '').replace(/\n/g,'<br>');
       return `  <p style="margin:0;padding:0;font-family:${ff};font-size:${b.size||ds}px;font-weight:${b.bold?700:400};font-style:${b.italic?'italic':'normal'};text-align:${b.align||'center'};color:${col};line-height:${lh};letter-spacing:${ls};">${text}</p>`;
     }
     if (b.type === 'spacer') return `  <div style="height:${b.h}px;line-height:0;font-size:0;">&nbsp;</div>`;
@@ -1142,7 +1183,7 @@ function exportHTML() {
     }
     return '';
   }).join('\n');
-
+ 
   const socialUrls = [
     gv('url-tiktok')    || '#',
     gv('url-youtube')   || '#',
@@ -1153,32 +1194,32 @@ function exportHTML() {
   // Unicode chars that render recognisably across email clients
   const socialChars  = ['♪', '▶', '⊕', '◎', '$'];
   const socialTitles = ['TikTok','YouTube','Website','Instagram','Donate'];
-
+ 
   const foot = showFoot ? `
 <tr><td align="center" bgcolor="${bg}" style="padding:16px 0;">
   <table cellpadding="0" cellspacing="0" border="0"><tr>
     ${socialUrls.map((href,i) => `<td style="padding:0 6px;"><a href="${href}" title="${socialTitles[i]}" style="display:inline-block;width:36px;height:36px;border-radius:50%;background-color:${iBg};line-height:36px;text-align:center;text-decoration:none;font-size:16px;color:${iFill};font-family:Arial,sans-serif;">${socialChars[i]}</a></td>`).join('\n    ')}
   </tr></table>
 </td></tr>` : '';
-
+ 
   const showWMExport   = gc('showWM');
   const wmOffsetExport = gn('wmOffset');
   const wmSideExport   = gv('wmSide');
   const wmHostedUrl    = gv('wmHostedUrl').trim();
   const wmBottomExport = gn('wmBottom');
   const wmHeightExport = gn('wmHeight') || 500;
-
+ 
   // Wordmark cell only renders in export when a hosted URL is provided
   const hasWMForExport = showWMExport && wmHostedUrl;
   // Cell width: height/8 is a good estimate for a vertical wordmark PNG aspect ratio
   const wmCellWidth = Math.round(wmHeightExport / 8) + wmOffsetExport;
-
+ 
   // Wordmark: driven by height only. Width is auto (natural image ratio).
   // valign=bottom + padding-bottom replaces all spacer math.
   const wmCellHTML = hasWMForExport ? `<td width="${wmCellWidth}" style="width:${wmCellWidth}px;vertical-align:bottom;padding-bottom:${wmBottomExport}px;padding-${wmSideExport === 'right' ? 'left' : 'right'}:${wmOffsetExport}px;padding-top:0;background-color:${bg};">
       <img src="${wmHostedUrl}" height="${wmHeightExport}" alt="Theater in Quarantine" style="display:block;border:0;height:${wmHeightExport}px;width:auto;" />
     </td>` : '';
-
+ 
   const rectCell = `<td align="center" style="background-color:${bg};padding:0;width:${exportW}px;">
         <!--[if mso]>
         <v:rect xmlns:v="urn:schemas-microsoft-com:vml" style="width:${exportW}px;" strokecolor="none" fillcolor="${rc}">
@@ -1190,19 +1231,19 @@ ${bhtml}
         </div>
         <!--[if mso]></v:textbox></v:rect><![endif]-->
       </td>`;
-
+ 
   const mirrorCellHTML = hasWMForExport
     ? `<td width="${wmCellWidth}" style="width:${wmCellWidth}px;background-color:${bg};padding:0;font-size:0;line-height:0;">&nbsp;</td>`
     : '';
-
+ 
   const tableRow = hasWMForExport
     ? (wmSideExport === 'right'
         ? `<tr>${mirrorCellHTML}${rectCell}${wmCellHTML}</tr>`
         : `<tr>${wmCellHTML}${rectCell}${mirrorCellHTML}</tr>`)
     : `<tr>${rectCell}</tr>`;
-
+ 
   const totalExportW = hasWMForExport ? exportW + wmCellWidth * 2 : exportW;
-
+ 
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1219,28 +1260,28 @@ ${bhtml}
 <body style="margin:0;padding:0;background-color:${bg};">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${bg};">
   <tr><td align="center" style="padding:${stagePadExport}px 16px;background-color:${bg};">
-
+ 
     <table width="${totalExportW}" cellpadding="0" cellspacing="0" border="0" style="width:${totalExportW}px;">
       ${tableRow}
     </table>
-
+ 
   </td></tr>
   ${foot}
 </table>
 </body>
 </html>`;
-
+ 
   $('export-pre').textContent = html;
   $('modal').classList.add('on');
 }
-
+ 
 function copyHTML() {
   navigator.clipboard.writeText($('export-pre').textContent).then(() => {
     toast('Copied to clipboard.');
   });
 }
 function closeModal() { $('modal').classList.remove('on'); }
-
+ 
 // ═══ UTILITIES ════════════════════════════════════════════════════════════════
 function esc(s) {
   return String(s)
@@ -1249,14 +1290,14 @@ function esc(s) {
     .replace(/</g,'&lt;')
     .replace(/>/g,'&gt;');
 }
-
+ 
 // ═══ INIT ═════════════════════════════════════════════════════════════════════
 const restored = loadFromLocalStorage();
 if (!restored || !blocks.length) blocks = defaultBlocks();
 renderTplList();
 render();
 window.addEventListener('resize', go);
-
+ 
 // Wordmark image picker
 document.getElementById('wmImageFile').addEventListener('change', e => {
   const file = e.target.files[0];
@@ -1270,7 +1311,7 @@ document.getElementById('wmImageFile').addEventListener('change', e => {
   };
   reader.readAsDataURL(file);
 });
-
+ 
 function clearWMImage() {
   wmImageData = null;
   $('wmImageFile').value = '';
@@ -1280,3 +1321,4 @@ function clearWMImage() {
 </script>
 </body>
 </html>
+ 
