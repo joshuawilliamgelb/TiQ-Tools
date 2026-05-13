@@ -783,19 +783,19 @@ function buildEditor(b) {
     ed.innerHTML = `
       <span class="lbl">Content</span>
       <textarea id="e-content" rows="4" style="font-family:monospace;font-size:11px;">${esc(b.content || '')}</textarea>
-      <div style="margin-top:5px;">
-        <button id="e-linkbtn" class="add-btn" style="width:100%;text-align:center;padding:6px;">
-          🔗 Link selected text
-        </button>
-        <div id="e-linkrow" style="display:none;margin-top:5px;display:none;">
-          <input type="url" id="e-linkurl" placeholder="https://…" style="margin-bottom:4px;">
-          <div style="display:flex;gap:6px;">
-            <button id="e-linkconfirm" class="add-btn" style="flex:1;text-align:center;">Apply</button>
-            <button id="e-linkcancel" class="add-btn" style="flex:1;text-align:center;">Cancel</button>
-          </div>
-        </div>
-        <div class="info" style="margin-top:4px;">Select text above, click Link, paste URL.</div>
+      <div style="margin-top:5px;display:flex;gap:5px;">
+        <button id="e-boldbtn" class="add-btn" style="flex:1;text-align:center;padding:6px;font-weight:700;">B</button>
+        <button id="e-italicbtn" class="add-btn" style="flex:1;text-align:center;padding:6px;font-style:italic;">I</button>
+        <button id="e-linkbtn" class="add-btn" style="flex:2;text-align:center;padding:6px;">🔗 Link</button>
       </div>
+      <div id="e-linkrow" style="display:none;margin-top:5px;">
+        <input type="url" id="e-linkurl" placeholder="https://…" style="margin-bottom:4px;">
+        <div style="display:flex;gap:6px;">
+          <button id="e-linkconfirm" class="add-btn" style="flex:1;text-align:center;">Apply</button>
+          <button id="e-linkcancel" class="add-btn" style="flex:1;text-align:center;">Cancel</button>
+        </div>
+      </div>
+      <div class="info" style="margin-top:4px;">Select text, then B / I / Link.</div>
       <div style="display:flex;gap:14px;margin-top:6px;">
         <label class="chk-row"><input type="checkbox" id="e-bold" ${b.bold ? 'checked' : ''}> Bold</label>
         <label class="chk-row"><input type="checkbox" id="e-italic" ${b.italic ? 'checked' : ''}> Italic</label>
@@ -833,6 +833,26 @@ function buildEditor(b) {
       const el = $(id);
       if (el) el.addEventListener(el.tagName === 'TEXTAREA' || el.type === 'text' ? 'input' : 'change', wire);
       if (el && el.type === 'range') el.addEventListener('input', wire);
+    });
+
+    // Bold button — wraps selected text in <strong>
+    $('e-boldbtn').addEventListener('click', () => {
+      const ta = $('e-content');
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      const selected = ta.value.slice(start, end);
+      if (!selected) return;
+      ta.value = ta.value.slice(0, start) + `<strong>${selected}</strong>` + ta.value.slice(end);
+      b.content = ta.value; go();
+    });
+
+    // Italic button — wraps selected text in <em>
+    $('e-italicbtn').addEventListener('click', () => {
+      const ta = $('e-content');
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      const selected = ta.value.slice(start, end);
+      if (!selected) return;
+      ta.value = ta.value.slice(0, start) + `<em>${selected}</em>` + ta.value.slice(end);
+      b.content = ta.value; go();
     });
 
     // Link button — wraps selected text in <a href="">
@@ -1169,13 +1189,15 @@ function exportHTML() {
     }
     if (b.type === 'image') {
       const bleedTotal = b.bleed ? padH + (b.bleedAmt || 0) : 0;
-      const marg = b.bleed ? `margin-left:-${bleedTotal}px;margin-right:-${bleedTotal}px;` : '';      const isBase64 = b.url && b.url.startsWith('data:');
+      const imgW = exportW + (b.bleed ? bleedTotal * 2 : 0);
+      const marg = b.bleed ? `margin-left:-${bleedTotal}px;margin-right:-${bleedTotal}px;` : '';
+      const isBase64 = b.url && b.url.startsWith('data:');
       const srcUrl = isBase64 ? null : b.url;
       const inner = srcUrl
-        ? `<img src="${srcUrl}" alt="${esc(b.label||'')}" width="100%" style="display:block;border:0;height:${b.h}px;object-fit:cover;" />`
+        ? `<img src="${srcUrl}" alt="${esc(b.label||'')}" width="${imgW}" height="${b.h}" style="display:block;border:0;width:${imgW}px;height:${b.h}px;object-fit:cover;" />`
         : `<div style="height:${b.h}px;background:#eee;text-align:center;line-height:${b.h}px;font-size:11px;color:#999;font-family:sans-serif;">${isBase64 ? '⚠ LOCAL FILE — upload to Mailchimp Content Studio and replace src' : esc(b.label||'IMAGE')}</div>`;
       const linked = b.href ? `<a href="${b.href}" style="display:block;text-decoration:none;">${inner}</a>` : inner;
-      return `  <div style="${marg}">${linked}</div>`;
+      return `  <div style="${marg}overflow:hidden;">${linked}</div>`;
     }
     if (b.type === 'link') {
       return `  <p style="margin:0;text-align:center;"><a href="${b.href||'#'}" style="font-family:${ff};font-size:${b.size||ds}px;color:${b.color||dtc};text-decoration:underline;letter-spacing:0.06em;">${esc(b.content||'LINK')}</a></p>`;
@@ -1213,6 +1235,9 @@ function exportHTML() {
   // Cell width: height/8 is a good estimate for a vertical wordmark PNG aspect ratio
   const wmCellWidth = Math.round(wmHeightExport / 8) + wmOffsetExport;
 
+  // Viewport = rect width only so mobile scales to fit rect, wordmark overhangs off-screen
+  const viewportW = exportW + 32;
+
   // Wordmark: driven by height only. Width is auto (natural image ratio).
   // valign=bottom + padding-bottom replaces all spacer math.
   const wmCellHTML = hasWMForExport ? `<td class="tiq-wm" width="${wmCellWidth}" style="width:${wmCellWidth}px;vertical-align:bottom;padding-bottom:${wmBottomExport}px;padding-${wmSideExport === 'right' ? 'left' : 'right'}:${wmOffsetExport}px;padding-top:0;background-color:${bg};">
@@ -1247,7 +1272,7 @@ ${bhtml}
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=${totalExportW + 32}, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=${viewportW}, initial-scale=1, shrink-to-fit=no">
 <!-- TiQ Email — generated by TiQ Email Composer -->
 <style type="text/css">
   @media only screen and (max-width:600px) {
